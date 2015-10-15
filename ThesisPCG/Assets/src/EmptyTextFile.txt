@@ -1,0 +1,19 @@
+﻿
+class Num[
+  type Succ <: Num
+  type pre <: Num
+  type Plus<N <: Num> <: Num
+]
+
+object Zero extends Num{
+  type Succ <: Num = Succ<Zero>
+  type pre <: Num = Zero
+  type Plus<N <: Num> <: Num = N
+}
+
+class Succ<pre>{
+  type Succ <: Num = Succ<Succ<pre>>
+  type pre <: Num = pre
+  type Plus<N <: Num> <: Num = Succ<pre# Plus N>
+}
+
