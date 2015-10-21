@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
 
+//this class represents the port of a node
+
 namespace Graph
 {
 	//a parameter exposes a dynamic property to be set and read
@@ -9,23 +11,33 @@ namespace Graph
 	//it can only be altered by its owner node
 	public abstract class Parameter
 	{
-		public readonly String Name;
-		public readonly System.Type T;
+		
+		public String Name {
+			get { return Name; } 
+			set {
+				this.Name = value;
+			}
+		}
 
-		public Parameter (string name, System.Type t)
+		protected object Value {
+			get { return Value; }
+			set { this.Value = value; }
+		}
+
+
+		public Parameter (string name)
 		{
 			this.Name = name;
-			this.T = t;
 		}
 
-		public bool IsType<T> ()
+		public bool Match (Parameter other)
 		{
-			return typeof(T) == this.T;
+			return other.GetType () == this.GetType () && other.Name == this.Name;
 		}
 
-		public bool IsType (Parameter parameter)
+		public bool IsType<T> () where T :Parameter
 		{
-			return parameter.T == this.T;
+			return this is T;
 		}
 
 		//this will be used for backtracking later in edit propagation
@@ -33,12 +45,13 @@ namespace Graph
 		//a whitebox parameter is immutable and is directly linked to the generators result property
 		//if a parameters weight as input is a scalar that reflects it's amount of influence in the output it is white box
 		//data can be blackbox too, for example a simulated population that output its varying properties based on input parameters
-		public enum Type
+		/*	public enum Type
 		{
 			BLACKBOX,
 			WHITEBOX
-		}
+		}*/
 
+	
 	}
 }
 

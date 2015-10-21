@@ -12,10 +12,13 @@ namespace Graph
 	{
 		//return source as observable based on its output parameter
 		//maybe use generic observable to hide casting inside sourcenode,
-		IObservable<T> AsObservable<T> (string outputParameter);
+		IObservable<Parameter> AsObservable ();
+
+		Parameter GetOutputParameter ();
+
 
 		//check whether the output
-		bool IsType<T> (string outputParameter);
+		bool IsType<T> () where T :Parameter;
 
 	}
 

@@ -6,19 +6,16 @@ using System.Threading.Tasks;
 
 namespace Generator
 {
-	public class IGeneratorTargetNode : TargetNode, ILabeledGenerator
+	public abstract class IGeneratorTargetNode : TargetNode
 	{
-		//use the parameters available from the target node to generate graphics
-		public  void Generate ()
-		{
-			Pull ();
-			throw new NotImplementedException ();
-		}
+		
 
-
-		public override Task Completion ()
+		public override Task ConsumeParameters ()
 		{
-			return  new Task (() => this.Generate ());
+			//do something with params from source
+			//and generate shit
+			return new Task (() => {
+			});
 		}
 
 

@@ -18,15 +18,16 @@ namespace Data
 
 	
 
-
-		public override Task Completion ()
+		public override void  Complete ()
 		{
-			return new Task (() => {
+			
+			this.Process = new Task (() => {
 				Texture2D LevelBitmap = Resources.Load (this.FilePath) as Texture2D;
 				Color[] ColorMapLine = LevelBitmap.GetPixels ();
 				//TODO
 			}
 			);
+			this.Process.Start ();
 		}
 
 

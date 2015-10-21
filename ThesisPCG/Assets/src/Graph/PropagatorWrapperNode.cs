@@ -1,10 +1,11 @@
-﻿using System;
+﻿using System.Threading.Tasks;
+using System;
 using Graph;
 using UniRx;
 
 namespace AssemblyCSharp
 {
-	public abstract class PropagatorWrapperNode : IPropagatorNode
+	public abstract class PropagatorWrapperNode : Node,IPropagatorNode
 	{
 		readonly ITargetNode Target;
 		readonly ISourceNode Source;
@@ -20,42 +21,52 @@ namespace AssemblyCSharp
 			this.Source = source;
 		}
 
-		public void LinkTo (SourceNode source, String parameterName)
+		public Parameter GetOutputParameter ()
 		{
-			throw new NotImplementedException ();
+			return Source.GetOutputParameter ();
 		}
 
-
-
-		public UniRx.IObservable<object> AsObservable ()
+		public Parameter GetInputParameter (String parameterName)
 		{
-			throw new NotImplementedException ();
+			return Target.GetInputParameter (parameterName);
 		}
 
-		public T Result<T> ()
+		public void LinkTo (ISourceNode source, Parameter targetedParameter)
 		{
-			throw new NotImplementedException ();
+			Target.LinkTo (source, targetedParameter);
 		}
 
-		public bool IsOutputType (Type t)
+		public Task ConsumeParameters ()
 		{
-			throw new NotImplementedException ();
+			return Target.ConsumeParameters ();
 		}
 
-		public Action Completion ()
+		public IObservable<Parameter> AsObservable ()
 		{
-			throw new NotImplementedException ();
+			return Source.AsObservable ();
 		}
 
-		public void Complete ()
+		public bool IsType<T> () where T : Parameter
 		{
-			throw new NotImplementedException ();
+			return Source.IsType<T> ();
 		}
 
-		public void Lock (float lockingFactor)
+		public override void Complete ()
 		{
-			throw new NotImplementedException ();
+			//fill data in parameters of source
+			Target.Complete ();
+			//continue with transformation of parameters from source node
+			Target.Completion ().ContinueWith ((t) => {
+				this.Process = Transformation ();
+				this.Process.Start ();
+			});
+		
+
 		}
+		//to override method that process' all data from source andsaves it in the input parameters of the target
+		public abstract Task Transformation ();
+
+
 	}
 }
 

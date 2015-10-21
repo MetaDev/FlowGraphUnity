@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using UniRx;
 
 namespace Graph
 {
@@ -11,13 +12,10 @@ namespace Graph
 		//and its Completion task will enter a final state after it has processed all previously available data.
 		//Complete will not block waiting for completion to occur, but rather will initiate the request; to wait for completion to occur, the Completion task may be used.
 
+		//this method has to be overriden to create the new task
 		void Complete ();
 
-		//sets the degree of edit-locking on a node: 0 is no locking, 1 means full locking
-		//the handling of a certain degree is done in the implementation
-		void Lock (float lockingFactor);
-
-
+		/*void Lock(float degree)*/
 	}
 }
 

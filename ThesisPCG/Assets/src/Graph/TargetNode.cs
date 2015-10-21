@@ -6,10 +6,11 @@ using UniRx;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections;
+using UnityEngine;
 
 namespace Graph
 {
-	public abstract class TargetNode : ITargetNode
+	public abstract class TargetNode : Node, ITargetNode
 	{
 		Dictionary<String,Parameter> InputParameters;
 		Dictionary<String,ISourceNode> InputSources;
@@ -20,41 +21,48 @@ namespace Graph
 			InputSources = new Dictionary<String,ISourceNode> ();
 		}
 		//check if parameters compatible
-		public void LinkTo (ISourceNode source, Parameter sourceParameter, String targetedParameter)
+		public void LinkTo (ISourceNode source, Parameter targetedParameter)
 		{
-			//check if targeted parameter exists
-			if (InputParameters.ContainsKey (targetedParameter)) {
-				
-				if (InputParameters [targetedParameter].IsType (sourceParameter)) {
-					InputSources.Add (targetedParameter, source);
-				}
+			//check if targeted parameter matches
+			if (targetedParameter.Match (source.GetOutputParameter ())) {
+				InputSources.Add (targetedParameter.Name, source);
 			}
 
+		}
+
+		public Parameter GetInputParameter (String parameterName)
+		{
+			if (InputParameters.ContainsKey (parameterName)) {
+				return InputParameters [parameterName];
+			}	
+			return null;
 		}
 		//get each source of a parameter as an observable and subscribe
-		public void Pull ()
+		//when all sources finished consumeParameters
+		public override void Complete ()
 		{
-			/*List<Observable> list =
-			foreach(DictionaryEntry entry in InputParameters){
-				if(InputSources.ContainsKey(entry.Key)){
-					
+			Observable.WhenAll<Parameter> (InputSources.Values.Select (source => {
+				source.Complete ();
+				return source.AsObservable ();
+			})).Subscribe (sourceParameters => {
+				//copy source paramters
+				//TODO
+			},
+				(er) => Debug.Log (er),
+				() => {
+					this.Process = ConsumeParameters ();
+					this.Process.Start ();
 				}
-			}
-			 InputSources.Values.ToList ().Select (source => {
-				
-				source.AsObservable<> ();}).ToList ();
-			return list ();*/
+			);
+		
 		}
 
 
-		//do something with the available sources
-		public abstract Task Completion ();
+		public abstract Task ConsumeParameters ();
+
+	
 
 
-		public void Lock (float lockingFactor)
-		{
-			throw new NotImplementedException ();
-		}
 	}
 }
 
