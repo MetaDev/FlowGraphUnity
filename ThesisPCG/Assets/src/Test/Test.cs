@@ -8,6 +8,7 @@ using AForge.Math;
 using Graph;
 using System;
 using UnityEngine.Networking;
+using UniRx;
 
 
 public class Test : MonoBehaviour
@@ -17,6 +18,7 @@ public class Test : MonoBehaviour
 	void Start ()
 	{
 		Parameter par = new IntegerParameter ("test");
+
 	}
 
 	void test2 ()
