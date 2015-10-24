@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using UniRx;
 
 namespace Graph.Parameters
 {
-	public interface IParameter<T>
+	public interface IParameter<T> : ISubject<T>
 	{
-		string Name ();
-
 		T GetValue ();
 
 		void SetValue (T value);

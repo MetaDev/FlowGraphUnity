@@ -8,3 +8,7 @@
 			BLACKBOX,
 			WHITEBOX
 		}*/
+
+
+		TODO implement similarly to Parameter (hidden generics) also TupelParameter and 2DParameter
+		and sourceNode as well

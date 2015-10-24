@@ -10,7 +10,7 @@ namespace Graph
 {
 	public interface ITargetNode : INode
 	{
-		void LinkTo (ISourceNode source, Parameter targetedParameter);
+		void LinkTo (SourceNode source, Parameter targetedParameter);
 
 		Task ConsumeParameters ();
 

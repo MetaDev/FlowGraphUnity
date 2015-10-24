@@ -14,20 +14,21 @@ namespace Graph
 	public abstract class TargetNode : Node, ITargetNode
 	{
 		
-		Dictionary<String,Parameter> InputParameters;
-		Dictionary<String,ISourceNode> InputSources;
 
-		public TargetNode ()
+		Dictionary<String,Parameter> InputParameters;
+		Dictionary<String,SourceNode> InputSources;
+
+		public TargetNode (string name) : base (name)
 		{
-			InputParameters = new Dictionary<String,Parameter> ();
-			InputSources = new Dictionary<String,ISourceNode> ();
+			this.InputParameters = new Dictionary<String,Parameter> ();
+			InputSources = new Dictionary<String,SourceNode> ();
 		}
 		//check if parameters compatible
-		public void LinkTo (ISourceNode source, Parameter targetedParameter)
+		public void LinkTo (SourceNode source, Parameter targetedParameter)
 		{
 			//check if targeted parameter matches
 			if (targetedParameter.Match (source.GetOutputParameter ())) {
-				InputSources.Add (targetedParameter.Name (), source);
+				InputSources.Add (targetedParameter.Name, source);
 			}
 
 		}
@@ -52,8 +53,8 @@ namespace Graph
 			},
 				(er) => Debug.Log (er),
 				() => {
-					this.Process = ConsumeParameters ();
-					this.Process.Start ();
+					this._Process = ConsumeParameters ();
+					Process ().Start ();
 				}
 			);
 		

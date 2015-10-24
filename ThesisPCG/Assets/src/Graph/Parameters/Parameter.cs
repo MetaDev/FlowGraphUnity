@@ -15,23 +15,20 @@ namespace Graph.Parameters
 
 	public abstract class Parameter
 	{
-		private class ParameterBase : IParameter<object>
+		protected class ParameterBase : IParameter<object>
 		{
-		
-			private String _Name { get; set; }
+
+			public String Name { get; }
 
 			private object _Value{ get; set; }
 
 
 			public ParameterBase (string name)
 			{
-				this._Name = name;
+				this.Name = name;
 			}
 
-			public string Name ()
-			{
-				return _Name;
-			}
+
 
 			public  object GetValue ()
 			{
@@ -43,18 +40,27 @@ namespace Graph.Parameters
 				this._Value = value;
 			}
 
-
-
-	
 		}
 
+	
 		private ParameterBase BaseClassInstance;
+
+		public string Name { get { return BaseClassInstance.Name; } }
+
+		protected object Value { get { return BaseClassInstance.GetValue (); } set { BaseClassInstance.SetValue (value); } }
+
 
 		//This is where the casting magic happens
 		//maybe out some error handling here, but not neccesary
 		protected T GetValue<T> ()
 		{
 			return (T)BaseClassInstance.GetValue ();
+
+		}
+
+		public T Cast<T> () where T: Parameter
+		{
+			return (T)this;
 		}
 
 		protected void SetValue<T> (T value)
@@ -70,12 +76,7 @@ namespace Graph.Parameters
 		//check if they are the same class and name
 		public bool Match (Parameter other)
 		{
-			return other.GetType () == this.GetType () && other.Name () == this.Name ();
-		}
-
-		public String Name ()
-		{
-			return BaseClassInstance.Name ();
+			return other.GetType () == this.GetType () && other.Name == this.Name;
 		}
 
 		public  bool IsType<T> () where T : Parameter
@@ -96,6 +97,8 @@ namespace Graph.Parameters
 			BLACKBOX,
 			WHITEBOX
 		}*/
+		//define whether the parameter is included in backpropagation through network
+		//private bool interferable
 
 
 	}

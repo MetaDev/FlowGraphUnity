@@ -3,22 +3,25 @@ using System;
 using Graph;
 using UniRx;
 using Graph.Parameters;
+using System.Collections.Generic;
 
 namespace AssemblyCSharp
 {
-	public abstract class PropagatorWrapperNode : Node,IPropagatorNode
+	public abstract class PropagatorNode : Node,IPropagatorNode<Parameter>
 	{
-		readonly ITargetNode Target;
-		readonly ISourceNode Source;
+		readonly TargetNode Target;
+		readonly SourceNode Source;
 
 
-		public PropagatorWrapperNode (ITargetNode target, ISourceNode source)
+		public PropagatorNode (string name, TargetNode target, SourceNode source) : base (name)
 		{
+
 			if (target == null)
 				throw new ArgumentNullException ("target");
 			if (source == null)
 				throw new ArgumentNullException ("source");
 
+	
 			this.Target = target;
 			this.Source = source;
 		}
@@ -33,7 +36,7 @@ namespace AssemblyCSharp
 			return Target.GetInputParameter (parameterName);
 		}
 
-		public void LinkTo (ISourceNode source, Parameter targetedParameter)
+		public void LinkTo (SourceNode source, Parameter targetedParameter)
 		{
 			Target.LinkTo (source, targetedParameter);
 		}
@@ -55,9 +58,9 @@ namespace AssemblyCSharp
 			//fill data in parameters of source
 			Target.Complete ();
 			//continue with transformation of parameters from source node
-			Target.Completion ().ContinueWith ((t) => {
-				this.Process = Transformation ();
-				this.Process.Start ();
+			Target.Process ().ContinueWith ((t) => {
+				this._Process = Transformation ();
+				Process ().Start ();
 			});
 		
 

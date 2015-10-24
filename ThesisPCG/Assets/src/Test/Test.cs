@@ -18,24 +18,25 @@ public class Test : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		IntegerParameter par = new IntegerParameter ("test");
-		Parameter par2 = new IntegerParameter ("test");
-		//par2.SetValue ("2");
-		Debug.Log (par2.IsType<IntegerParameter> ());
+		
+	}
 
+	void nodeTest ()
+	{
 		int t = Node.NodeType.DATA;
 	}
 
-	void test2 ()
-	{
-		Task t = new Task (() => Debug.Log ("test"));
-		t.Start ();
-	}
-
-	void test1 ()
+	void parameterTest ()
 	{
 
+		IntegerParameter par = new IntegerParameter ("test");
+		Parameter par2 = new IntegerParameter ("test");
 
+		par.SetValue (2);
+		//par2.setValue(2) -> not possible
+
+		//true
+		Debug.Log (par2.IsType<IntegerParameter> ());
 
 	}
 
@@ -49,9 +50,5 @@ public class Test : MonoBehaviour
 
 	}
 
-	public static void Main (string[] args)
-	{
-		
-		new Test ().test1 ();
-	}
+
 }
