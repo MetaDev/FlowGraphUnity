@@ -7,11 +7,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections;
 using UnityEngine;
+using Graph.Parameters;
 
 namespace Graph
 {
 	public abstract class TargetNode : Node, ITargetNode
 	{
+		
 		Dictionary<String,Parameter> InputParameters;
 		Dictionary<String,ISourceNode> InputSources;
 
@@ -25,7 +27,7 @@ namespace Graph
 		{
 			//check if targeted parameter matches
 			if (targetedParameter.Match (source.GetOutputParameter ())) {
-				InputSources.Add (targetedParameter.Name, source);
+				InputSources.Add (targetedParameter.Name (), source);
 			}
 
 		}

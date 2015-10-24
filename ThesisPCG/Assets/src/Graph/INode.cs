@@ -16,6 +16,8 @@ namespace Graph
 		void Complete ();
 
 		/*void Lock(float degree)*/
+
 	}
+
 }
 

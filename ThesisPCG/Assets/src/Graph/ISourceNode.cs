@@ -5,6 +5,7 @@ using System;
 using UnityEditor;
 using System.Threading.Tasks;
 
+using Graph.Parameters;
 
 namespace Graph
 {
@@ -16,9 +17,6 @@ namespace Graph
 
 		Parameter GetOutputParameter ();
 
-
-		//check whether the output
-		bool IsType<T> () where T :Parameter;
 
 	}
 

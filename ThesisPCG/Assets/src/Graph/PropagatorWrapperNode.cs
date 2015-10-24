@@ -2,6 +2,7 @@
 using System;
 using Graph;
 using UniRx;
+using Graph.Parameters;
 
 namespace AssemblyCSharp
 {
@@ -9,6 +10,7 @@ namespace AssemblyCSharp
 	{
 		readonly ITargetNode Target;
 		readonly ISourceNode Source;
+
 
 		public PropagatorWrapperNode (ITargetNode target, ISourceNode source)
 		{
@@ -46,10 +48,7 @@ namespace AssemblyCSharp
 			return Source.AsObservable ();
 		}
 
-		public bool IsType<T> () where T : Parameter
-		{
-			return Source.IsType<T> ();
-		}
+	
 
 		public override void Complete ()
 		{

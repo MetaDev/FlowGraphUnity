@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using Graph.Parameters;
 
 namespace Graph
 {
 	public abstract class SourceNode: Node, ISourceNode
 	{
+		
 		Parameter OutputParameter;
 
 
@@ -30,11 +32,7 @@ namespace Graph
 
 		}
 
-		public bool IsType<T> () where T :Parameter
-		{
-			return OutputParameter.IsType<T> ();
-		}
-
+	
 
 
 

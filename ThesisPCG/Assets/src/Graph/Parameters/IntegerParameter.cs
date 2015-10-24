@@ -1,28 +1,31 @@
 ﻿using System;
 using UnityEngine;
+using System.Threading.Tasks;
 
-namespace Graph
+namespace Graph.Parameters
 {
 	//a parameter exposes a dynamic property to be set and read
 	//the type of the parameter is the type of the first set value
 	//this is a wrapper because type checking is not enough, some values also have to keep in which iteration they were calculated
 	//it can only be altered by its owner node
-	public class IntegerParameter : Parameter
+	public class IntegerParameter : Parameter , IParameter<int>
 	{
-		public int GetValue ()
-		{
-			return (int)Value;
-		}
+		
 
 		public IntegerParameter (string name) : base (name)
 		{
 		}
 
-		public void SetValue (int value)
+		
+		public int GetValue ()
 		{
-			this.Value = value;
+			return this.GetValue<int> ();
 		}
 
+		public void SetValue (int value)
+		{
+			this.SetValue <int> (value);
+		}
 	
 	}
 }

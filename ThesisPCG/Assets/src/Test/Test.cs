@@ -9,6 +9,7 @@ using Graph;
 using System;
 using UnityEngine.Networking;
 using UniRx;
+using Graph.Parameters;
 
 
 public class Test : MonoBehaviour
@@ -17,8 +18,12 @@ public class Test : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		Parameter par = new IntegerParameter ("test");
+		IntegerParameter par = new IntegerParameter ("test");
+		Parameter par2 = new IntegerParameter ("test");
+		//par2.SetValue ("2");
+		Debug.Log (par2.IsType<IntegerParameter> ());
 
+		int t = Node.NodeType.DATA;
 	}
 
 	void test2 ()

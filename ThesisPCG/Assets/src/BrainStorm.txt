@@ -1,19 +1,10 @@
-﻿
-class Num[
-  type Succ <: Num
-  type pre <: Num
-  type Plus<N <: Num> <: Num
-]
-
-object Zero extends Num{
-  type Succ <: Num = Succ<Zero>
-  type pre <: Num = Zero
-  type Plus<N <: Num> <: Num = N
-}
-
-class Succ<pre>{
-  type Succ <: Num = Succ<Succ<pre>>
-  type pre <: Num = pre
-  type Plus<N <: Num> <: Num = Succ<pre# Plus N>
-}
-
+﻿//this will be used for backtracking later in edit propagation
+			// a blackbox parameters is processed inside the generator node and the process' result is assigned to a generators result propery
+			//a whitebox parameter is immutable and is directly linked to the generators result property
+			//if a parameters weight as input is a scalar that reflects it's amount of influence in the output it is white box
+			//data can be blackbox too, for example a simulated population that output its varying properties based on input parameters
+			/*	public enum Type
+		{
+			BLACKBOX,
+			WHITEBOX
+		}*/
