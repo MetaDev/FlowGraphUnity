@@ -8,21 +8,21 @@ using UniRx;
 
 namespace Data
 {
-	public class BitmapSourceNode : SourceNode , ISourceNode<Color[][]>
+	public class BitmapSourceNode : SourceNode , ISourceNode<ColorMapParameter>
 	{
 		Color[][] ColorMap;
 		String FilePath;
 
 
 
-		public new UniRx.IObservable<I2DParameter<Color>> AsObservable ()
+		public new UniRx.IObservable<ColorMapParameter> AsObservable ()
 		{
 			return Observable.Return (GetOutputParameter ());
 		}
 
-		public new I2DParameter<Color> GetOutputParameter ()
+		public new ColorMapParameter GetOutputParameter ()
 		{
-			return base.GetOutputParameter<I2DParameter<Color>> ();
+			return base.GetOutputParameter<ColorMapParameter> ();
 		}
 
 

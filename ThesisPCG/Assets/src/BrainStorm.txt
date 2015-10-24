@@ -12,3 +12,6 @@
 
 		TODO implement similarly to Parameter (hidden generics) also TupelParameter and 2DParameter
 		and sourceNode as well
+
+
+		step by step introduce generics that bubble from ISubject to Iparameter to ISourceNode 

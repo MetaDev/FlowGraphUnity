@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using UniRx;
 
 namespace Graph.Parameters
 {
-	public interface IParameter<T> : ISubject<T>
+	public interface IParameter<T>
 	{
 		T GetValue ();
 
