@@ -18,6 +18,16 @@ namespace AssemblyCSharp
 		{
 			this.SetValue<float> (value);
 		}
+
+		public IDisposable Subscribe (UniRx.IObserver<float> observer)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void OnNext (float value)
+		{
+			throw new NotImplementedException ();
+		}
 	}
 }
 

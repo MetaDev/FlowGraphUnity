@@ -6,10 +6,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
 using Graph.Parameters;
+using UnityEngine;
 
 namespace Graph
 {
-	public abstract class SourceNode: Node, ISourceNode<Parameter>
+	public class SourceNode: Node, ISourceNode<Parameter>
 	{
 		
 		protected Parameter OutputParameter;
@@ -20,21 +21,24 @@ namespace Graph
 
 		}
 
+
 		public T GetOutputParameter<T> () where T : Parameter
 		{
-			return OutputParameter.Cast<T> ();
+			return OutputParameter.AsTypedParameter<T> ();
 		}
 
+
+		public SourceNode (string name, Parameter outputParameter, Action loadParameter) : base (name, loadParameter)
+		{
+			this.OutputParameter = outputParameter;
+		}
 
 		public SourceNode (string name, Parameter outputParameter) : base (name)
 		{
 			this.OutputParameter = outputParameter;
 		}
 
-		public SourceNode (string name) : base (name)
-		{
-		}
-		
+
 
 
 		//if the source is requested as observable, return just the result
@@ -43,7 +47,18 @@ namespace Graph
 		//if not a promise should returned of the result after the task finishes
 		public virtual IObservable<Parameter> AsObservable ()
 		{
-			return Observable.Return<Parameter> (OutputParameter);
+			return Observable.Start (() => {
+				Complete ();
+				return OutputParameter;
+			});
+		}
+
+		public  IObservable<T> AsObservable<T> () where T : Parameter
+		{
+			return Observable.Start (() => {
+				Complete ();
+				return OutputParameter.AsTypedParameter<T> ();
+			});
 		}
 
 

@@ -19,6 +19,8 @@ namespace Graph.Parameters
 		{
 			this.SetValue<Color> (value);
 		}
+
+	
 	}
 }
 

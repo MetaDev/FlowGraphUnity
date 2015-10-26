@@ -10,6 +10,9 @@ using System;
 using UnityEngine.Networking;
 using UniRx;
 using Graph.Parameters;
+using System.Runtime.Remoting.Messaging;
+using Generator;
+using Data;
 
 
 public class Test : MonoBehaviour
@@ -18,12 +21,24 @@ public class Test : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		
+		nodeTest ();
 	}
 
 	void nodeTest ()
 	{
-		int t = Node.NodeType.DATA;
+		var sample = new SampleNode (100, 100);
+		var colormap = new SampleMapColorNode ();
+		var block = new BlockGenerator ();
+		var mapsource = new BitmapSourceNode ("/Users/Harald/Cloud Workspace/Informatica/Master2/Thesis/UnityApp/ThesisPCG/ThesisPCG/Assets/files/bitmaps");
+
+
+		colormap.LinkTo (sample);
+		colormap.LinkTo (mapsource);
+
+		block.LinkTo (colormap);
+		block.LinkTo (sample);
+
+		block.Complete ();
 	}
 
 	void parameterTest ()
@@ -40,15 +55,11 @@ public class Test : MonoBehaviour
 
 	}
 
-	void test3 ()
+	void AForgeTest ()
 	{
 
 	}
-	// Update is called once per frame
-	void Update ()
-	{
 
-	}
 
 
 }

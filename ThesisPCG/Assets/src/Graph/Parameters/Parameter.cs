@@ -3,8 +3,7 @@ using UnityEngine;
 
 //this class represents the port of a node
 using System.Threading.Tasks;
-using AssemblyCSharp;
-using System.Diagnostics;
+using UniRx;
 
 namespace Graph.Parameters
 {
@@ -18,7 +17,7 @@ namespace Graph.Parameters
 		protected class ParameterBase : IParameter<object>
 		{
 
-			public String Name { get; }
+			public String Name { get; private set; }
 
 			private object _Value{ get; set; }
 
@@ -44,35 +43,37 @@ namespace Graph.Parameters
 		}
 
 	
-		private ParameterBase BaseClassInstance;
+		private ParameterBase _BaseClassInstance;
 
-		public string Name { get { return BaseClassInstance.Name; } }
+		public string Name { get { return _BaseClassInstance.Name; } }
 
-		protected object Value { get { return BaseClassInstance.GetValue (); } set { BaseClassInstance.SetValue (value); } }
+		protected object Value { get { return _BaseClassInstance.GetValue (); } set { _BaseClassInstance.SetValue (value); } }
 
 
 		//This is where the casting magic happens
 		//maybe out some error handling here, but not neccesary
 		protected T GetValue<T> ()
 		{
-			return (T)BaseClassInstance.GetValue ();
+			return (T)_BaseClassInstance.GetValue ();
 
 		}
 
-		public T Cast<T> () where T: Parameter
-		{
-			return (T)this;
-		}
+
 
 		protected void SetValue<T> (T value)
 		{
-			BaseClassInstance.SetValue ((T)value);
+			_BaseClassInstance.SetValue ((T)value);
 
+		}
+
+		private ParameterBase GetBase ()
+		{
+			return _BaseClassInstance;
 		}
 
 		public Parameter (string name)
 		{
-			BaseClassInstance = new ParameterBase (name);
+			_BaseClassInstance = new ParameterBase (name);
 		}
 		//check if they are the same class and name
 		public bool Match (Parameter other)
@@ -85,8 +86,21 @@ namespace Graph.Parameters
 			return this.GetType () == typeof(T);
 		}
 
+		public T AsTypedParameter<T> () where T : Parameter
+		{
+			Debug.Log(this);
+			return (T)this;
+		}
 
+		public void Copy (Parameter parameter)
+		{
+			if (Match (parameter)) {
+				_BaseClassInstance.SetValue (parameter.GetBase ().GetValue ());
 
+			} else {
+				Debug.Log ("Trying to copy incompatible parameters.");
+			}
+		}
 
 		//this will be used for backtracking later in edit propagation
 		// a blackbox parameters is processed inside the generator node and the process' result is assigned to a generators result propery

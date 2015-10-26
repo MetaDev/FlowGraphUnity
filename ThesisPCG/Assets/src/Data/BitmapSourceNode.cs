@@ -5,43 +5,30 @@ using UnityEngine;
 using System.Threading.Tasks;
 using Graph.Parameters;
 using UniRx;
+using System.Security.Policy;
 
 namespace Data
 {
-	public class BitmapSourceNode : SourceNode , ISourceNode<ColorMapParameter>
+	public class BitmapSourceNode : SourceNode 
 	{
-		Color[][] ColorMap;
+		
 		String FilePath;
 
-
-
-		public new UniRx.IObservable<ColorMapParameter> AsObservable ()
-		{
-			return Observable.Return (GetOutputParameter ());
-		}
-
-		public new ColorMapParameter GetOutputParameter ()
-		{
-			return base.GetOutputParameter<ColorMapParameter> ();
-		}
-
-
-		public override void  Complete ()
+		public override void Complete ()
 		{
 			
-			this._Process = new Task (() => {
-				Texture2D LevelBitmap = Resources.Load (this.FilePath) as Texture2D;
-				Color[] ColorMapLine = LevelBitmap.GetPixels ();
-				//TODO
-			}
-			);
-			Process ().Start ();
+			Texture2D LevelBitmap = Resources.Load (this.FilePath) as Texture2D;
+			Color[] ColorMapLine = LevelBitmap.GetPixels ();
+			Color[,] ColorMap = new Color[LevelBitmap.height, LevelBitmap.width];
+			Buffer.BlockCopy (ColorMapLine, 0, ColorMap, 0, ColorMapLine.Length * sizeof(double));
+			GetOutputParameter<ColorMapParameter> ().SetValue (ColorMap);
+			Debug.Log (ColorMap[0,0]);
 		}
 
 
 
 
-		public BitmapSourceNode (string name, string filePath, Parameter outputParameter) : base (name, outputParameter)
+		public BitmapSourceNode (string filePath) : base ("Bitmap Source Node", new ColorMapParameter ("color"))
 		{
 			this.FilePath = filePath;
 		

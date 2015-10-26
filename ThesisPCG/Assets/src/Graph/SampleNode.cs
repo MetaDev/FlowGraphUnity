@@ -11,26 +11,26 @@ namespace Graph
 {
 	public class SampleNode : SourceNode
 	{
-		IEnumerable<IntegerTupleParameter> Samples;
+		IEnumerable<IntegerVector2Parameter> Samples;
 
-		public SampleNode (int rangeX, int rangeY) : base ("Sample Node")
+		public SampleNode (int rangeX, int rangeY) : base ("Sample Node", new IntegerVector2Parameter ("position"))
 		{
 			Samples = MakeSamples (rangeX, rangeY);
-			this.OutputParameter = new IntegerTupleParameter ("Map Position");
+			this.OutputParameter = new IntegerVector2Parameter ("Map Position");
 		}
 
-		public static IEnumerable<IntegerTupleParameter> MakeSamples (int rangeX, int rangeY)
+		public static IEnumerable<IntegerVector2Parameter> MakeSamples (int rangeX, int rangeY)
 		{
 			for (int x = 0; x < rangeX; x++) {
 				for (int y = 0; y < rangeX; y++) {
-					IntegerTupleParameter param = new IntegerTupleParameter ("Map Position");
+					IntegerVector2Parameter param = new IntegerVector2Parameter ("Map Position");
 					param.SetValue (new MathNet.Numerics.Tuple<int,int> (x, y));
 					yield return param;
 				}
 			}
 		}
 
-		public override UniRx.IObservable<Parameter> AsObservable ()
+		public override IObservable<Parameter> AsObservable ()
 		{
 			return Observable.ToObservable (Samples.Cast<Parameter> ());
 		}

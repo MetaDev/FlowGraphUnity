@@ -15,3 +15,12 @@
 
 
 		step by step introduce generics that bubble from ISubject to Iparameter to ISourceNode 
+
+		generics would be possible if working with Tuples instead of dictionaries
+		This would result in a fixed amount of parameters at compile time, which isn't neccesarly a problem
+
+
+		ITarget<T>
+		ISource<T>
+
+		T->Tuple<T1,T2,T3,...>

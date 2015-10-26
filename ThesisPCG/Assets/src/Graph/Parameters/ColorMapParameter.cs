@@ -1,6 +1,7 @@
 ﻿using System;
 using Graph.Parameters;
 using UnityEngine;
+using UniRx;
 
 namespace Graph.Parameters
 {
@@ -10,25 +11,27 @@ namespace Graph.Parameters
 		{
 		}
 
-		public Color[][] GetValue ()
+		public Color[,] GetValue ()
 		{
-			return this.GetValue<Color[][]> ();
+			return this.GetValue<Color[,]> ();
 		}
 
-		public void SetValue (Color[][] value)
+		public void SetValue (Color[,] value)
 		{
-			this.SetValue<Color[][]> (value);
+			this.SetValue<Color[,]> (value);
 		}
 
 		public Color GetValue (int i, int j)
 		{
-			return this.GetValue<Color[][]> () [i] [j];
+			return this.GetValue<Color[,]> () [i, j];
 		}
 
 		public void SetValue (int i, int j, Color value)
 		{
-			this.GetValue<Color[][]> () [i] [j] = value;
+			this.GetValue<Color[,]> () [i, j] = value;
 		}
+
+
 	}
 }
 
