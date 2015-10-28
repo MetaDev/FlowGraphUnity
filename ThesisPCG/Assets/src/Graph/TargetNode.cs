@@ -16,7 +16,7 @@ namespace Graph
 	{
 		
 
-		protected Dictionary<String,Parameter> InputParameters = new Dictionary<String,Parameter> ();
+		private Dictionary<String,Parameter> InputParameters = new Dictionary<String,Parameter> ();
 
 		protected Dictionary<String,IDisposable> InputSourcesConnection = new Dictionary<String,IDisposable> ();
 
@@ -28,6 +28,10 @@ namespace Graph
 		{
 		}
 
+		protected void AddInputParameter (Parameter param)
+		{
+			InputParameters.Add (param.Name, param);
+		}
 
 		//check if parameters compatible
 		public void LinkTo (params ISourceNode<Parameter>[] sources)
@@ -62,7 +66,6 @@ namespace Graph
 					this.InputParameters [param.Name].Copy (param);
 				}
 				//consume them
-				Debug.Log ("wait");
 				Complete ();
 			});
 

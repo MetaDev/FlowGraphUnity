@@ -27,8 +27,9 @@ for target node make set as inputParameters instead of dictionary
 
 create differen classes for parameters as ports and parameters as values
 
-to avoid repetition of single value parameters, save their "default" value in the respective input parameter of the target
-and only zip the sequential parameters
+allow parameter constructor with default value
+
+values without default have to be linked, check this
 
 
 try to find a solution for compile time checkign of parameter names, please
