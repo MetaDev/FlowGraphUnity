@@ -34,12 +34,12 @@ namespace Graph
 		{
 			//check if all are matching
 			int matchings = 0;
-			int maxSourceSize = 1;
+			int longestSourceSequence = 1;
 			foreach (ISourceNode<Parameter> source in sources) {
 				String sourceParamName = source.GetOutputParameter ().Name;
 				if (InputParameters.ContainsKey (sourceParamName)) {
 					if (source.GetOutputParameter ().Match (InputParameters [sourceParamName])) {
-						maxSourceSize = Math.Max (source.GetSize (), maxSourceSize);
+						longestSourceSequence = Math.Max (source.GetSize (), longestSourceSequence);
 						matchings++;
 					} else {
 						Debug.Log ("parameter type mismatch." + source.GetOutputParameter ().GetType ());
@@ -52,20 +52,20 @@ namespace Graph
 			//zip if all sources match
 			//default values allowed
 			//if (matchings == sources.Count ()) {
-			Debug.Log (sources.Length);
-			var parameters = Observable.Zip<Parameter> (sources.Select ((source) => ((IObservable<Parameter>)source.AsObservable (maxSourceSize))));
-			//due to cast, we have to reconvert to hot observable
-			var hotParameters = parameters.Publish ();
-			hotParameters.Subscribe ((list) => {
+			var zip = sources.Select ((source) => (source.AsObservable (longestSourceSequence))).ToArray ();
+			var parameters = Observable.Zip<Parameter> (zip);
+
+			parameters.Subscribe ((list) => {
 				//copy parameters
 				foreach (Parameter param in list) {
+					Debug.Log (param.Name);
 					this.InputParameters [param.Name].Copy (param);
 				}
 				//consume them
+				Debug.Log ("wait");
 				Complete ();
 			});
-			//sources.Select ((source) => (source.AsObservable (maxSourceSize))).
-			//}
+
 
 		}
 

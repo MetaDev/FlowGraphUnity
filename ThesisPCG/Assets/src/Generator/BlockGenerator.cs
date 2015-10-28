@@ -16,8 +16,9 @@ namespace Generator
 			InputParameters.Add ("Position", new IntegerVector2Parameter ("Position"));
 			var color = new ColorParameter ("Color");
 			color.SetValue (new Color (0.1f, 0.20f, 0.3f));
-			InputParameters.Add ("Color", new ColorParameter ("Color"));
-
+			Debug.Log (color.GetValue<Color> ());
+			InputParameters ["Color"] = color;
+			Debug.Log (InputParameters ["Color"].GetValue<Color> ());
 		}
 
 		public override void Complete ()

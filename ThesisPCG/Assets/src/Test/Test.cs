@@ -27,20 +27,14 @@ public class Test : MonoBehaviour
 
 	void nodeTest ()
 	{
-		var sample = new SampleNode (10, 10);
+		var sample = new SampleNode (2, 2);
 		//var colormap = new SampleMapColorNode ();
 		var block = new BlockGenerator ();
 		var mapsource = new BitmapSourceNode ("Assets/Resources/bitmaps/bitmaptest.png");
 
-		sample.AsObservable ().Subscribe<Parameter> ((obj) => {
-			Debug.Log (obj);
 
-		});
 
-		mapsource.AsObservable ().Subscribe<Parameter> ((obj) => {
-			var typedObj = obj.As<ColorMapParameter> ();
-			Debug.Log (typedObj.GetValue (1, 1));
-		});
+
 
 
 //		colormap.LinkTo (sample);
@@ -48,10 +42,9 @@ public class Test : MonoBehaviour
 //		colormap.LinkTo (mapsource);
 //
 //		block.LinkTo (colormap);
-//
+
 		block.LinkTo (sample);
-//
-//		block.Complete ();
+
 
 		mapsource.Start ();
 		sample.Start ();
