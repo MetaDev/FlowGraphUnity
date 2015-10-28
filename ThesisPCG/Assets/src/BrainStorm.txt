@@ -1,4 +1,40 @@
-﻿//this will be used for backtracking later in edit propagation
+﻿TODO
+
+
+
+also complete a target every time all data is available not after all data has been passed 
+
+only return one instance of observable for each cycle of the dataflow graph
+cache if needed
+
+
+create wrapper class for arrayparameter and matrix parameter as they have different
+
+http://leecampbell.blogspot.be/2010/08/rx-part-7-hot-and-cold-observables.html
+
+gebruik (multicast, subject)
+
+instead of saveing the soruces in the target save only the link
+
+
+add a repeat mode (alternating, copy,...) to a source
+
+add Builder pattern to construct the different types of configures source nodes
+
+
+
+for target node make set as inputParameters instead of dictionary
+
+create differen classes for parameters as ports and parameters as values
+
+to avoid repetition of single value parameters, save their "default" value in the respective input parameter of the target
+and only zip the sequential parameters
+
+
+try to find a solution for compile time checkign of parameter names, please
+
+
+//this will be used for backtracking later in edit propagation
 			// a blackbox parameters is processed inside the generator node and the process' result is assigned to a generators result propery
 			//a whitebox parameter is immutable and is directly linked to the generators result property
 			//if a parameters weight as input is a scalar that reflects it's amount of influence in the output it is white box

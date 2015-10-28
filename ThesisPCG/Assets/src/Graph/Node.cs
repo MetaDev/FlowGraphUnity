@@ -22,18 +22,7 @@ namespace Graph
 			this._Complete = complete;
 		}
 
-
-
-		public virtual void Complete ()
-		{
-			if (_Complete != null) {
-				_Complete ();
-			} else {
-				Debug.Log ("No completion method assigned.");
-			}
-
-		}
-
+		public abstract void Complete ();
 		//for inheritance purpose we use classes to define the Node Type
 		public class NodeType
 		{

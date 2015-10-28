@@ -10,9 +10,6 @@ namespace Graph
 {
 	public interface ITargetNode : INode
 	{
-		void LinkTo (ISourceNode<Parameter> source);
-
-		Parameter GetInputParameter (String parameterName);
-		void AddInputParameter (Parameter inputParameter);
+		void LinkTo (params ISourceNode<Parameter>[] sources);
 	}
 }

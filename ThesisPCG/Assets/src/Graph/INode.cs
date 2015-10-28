@@ -15,6 +15,7 @@ namespace Graph
 		//this method has to be overriden to create the new task
 
 		/*void Lock(float degree)*/
+		void Complete ();
 
 	}
 

@@ -5,6 +5,7 @@ using MathNet.Numerics.Random;
 using MathNet.Numerics.Distributions;
 using System.Collections.Generic;
 using AForge.Math;
+using MathNet.Numerics;
 using Graph;
 using System;
 using UnityEngine.Networking;
@@ -26,19 +27,34 @@ public class Test : MonoBehaviour
 
 	void nodeTest ()
 	{
-		var sample = new SampleNode (100, 100);
-		var colormap = new SampleMapColorNode ();
+		var sample = new SampleNode (10, 10);
+		//var colormap = new SampleMapColorNode ();
 		var block = new BlockGenerator ();
-		var mapsource = new BitmapSourceNode ("/Users/Harald/Cloud Workspace/Informatica/Master2/Thesis/UnityApp/ThesisPCG/ThesisPCG/Assets/files/bitmaps");
+		var mapsource = new BitmapSourceNode ("Assets/Resources/bitmaps/bitmaptest.png");
+
+		sample.AsObservable ().Subscribe<Parameter> ((obj) => {
+			Debug.Log (obj);
+
+		});
+
+		mapsource.AsObservable ().Subscribe<Parameter> ((obj) => {
+			var typedObj = obj.As<ColorMapParameter> ();
+			Debug.Log (typedObj.GetValue (1, 1));
+		});
 
 
-		colormap.LinkTo (sample);
-		colormap.LinkTo (mapsource);
-
-		block.LinkTo (colormap);
+//		colormap.LinkTo (sample);
+//
+//		colormap.LinkTo (mapsource);
+//
+//		block.LinkTo (colormap);
+//
 		block.LinkTo (sample);
+//
+//		block.Complete ();
 
-		block.Complete ();
+		mapsource.Start ();
+		sample.Start ();
 	}
 
 	void parameterTest ()
@@ -51,7 +67,7 @@ public class Test : MonoBehaviour
 		//par2.setValue(2) -> not possible
 
 		//true
-		Debug.Log (par2.IsType<IntegerParameter> ());
+		Debug.Log (par2.Is<IntegerParameter> ());
 
 	}
 

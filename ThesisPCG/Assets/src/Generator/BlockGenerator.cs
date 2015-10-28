@@ -13,19 +13,21 @@ namespace Generator
 		public BlockGenerator () : base ("Block")
 		{
 			//set input parameters
-			AddInputParameter (new IntegerVector2Parameter ("Position"));
-			AddInputParameter (new ColorParameter ("Position"));
+			InputParameters.Add ("Position", new IntegerVector2Parameter ("Position"));
+			var color = new ColorParameter ("Color");
+			color.SetValue (new Color (0.1f, 0.20f, 0.3f));
+			InputParameters.Add ("Color", new ColorParameter ("Color"));
 
 		}
 
 		public override void Complete ()
 		{
-			//set color
-			GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
-			IntegerVector2Parameter position = GetInputParameter<IntegerVector2Parameter> ("Position");
-			cube.transform.position = new Vector3 (position.GetValue1 (), position.GetValue2 (), 0);
 			//set position
-			ColorParameter color = GetInputParameter<ColorParameter> ("Position");
+			GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
+			IntegerVector2Parameter position = InputParameters ["Position"].As<IntegerVector2Parameter> ();
+			cube.transform.position = new Vector3 (position.GetValue1 (), position.GetValue2 (), 0);
+			//set color
+			ColorParameter color = InputParameters ["Color"].As<ColorParameter> ();
 			cube.GetComponent<Renderer> ().material.color = color.GetValue ();
 		}
 		

@@ -11,36 +11,31 @@ namespace Graph
 {
 	public class SampleNode : SourceNode
 	{
-		IEnumerable<IntegerVector2Parameter> Samples;
+		private int RangeX;
+		private int RangeY;
 
-		public SampleNode (int rangeX, int rangeY) : base ("Sample Node", new IntegerVector2Parameter ("position"))
+		public SampleNode (int rangeX, int rangeY) : base ("Sample Node", rangeX * rangeY, new IntegerVector2Parameter ("Position"))
 		{
-			Samples = MakeSamples (rangeX, rangeY);
-			this.OutputParameter = new IntegerVector2Parameter ("Map Position");
+			this.RangeX = rangeX;
+			this.RangeY = rangeY;
 		}
 
-		public static IEnumerable<IntegerVector2Parameter> MakeSamples (int rangeX, int rangeY)
+
+		public override void Complete ()
 		{
-			for (int x = 0; x < rangeX; x++) {
-				for (int y = 0; y < rangeX; y++) {
-					IntegerVector2Parameter param = new IntegerVector2Parameter ("Map Position");
+			for (int x = 0; x < RangeX; x++) {
+				for (int y = 0; y < RangeY; y++) {
+					IntegerVector2Parameter param = new IntegerVector2Parameter ("Position");
 					param.SetValue (new MathNet.Numerics.Tuple<int,int> (x, y));
-					yield return param;
+					this.OutputParameterSequence.Add (param);
 				}
 			}
 		}
 
-		public override IObservable<Parameter> AsObservable ()
-		{
-			return Observable.ToObservable (Samples.Cast<Parameter> ());
-		}
+
 
 		//the range could be loaded from a config file
 		//the loading would than be done in complete
-		public override void Complete ()
-		{
-			//do nothing
-		}
 
 	}
 }

@@ -49,10 +49,11 @@ namespace Graph.Parameters
 
 		protected object Value { get { return _BaseClassInstance.GetValue (); } set { _BaseClassInstance.SetValue (value); } }
 
+		protected bool Cached = false;
 
 		//This is where the casting magic happens
 		//maybe out some error handling here, but not neccesary
-		protected T GetValue<T> ()
+		public T GetValue<T> ()
 		{
 			return (T)_BaseClassInstance.GetValue ();
 
@@ -60,7 +61,7 @@ namespace Graph.Parameters
 
 
 
-		protected void SetValue<T> (T value)
+		public void SetValue<T> (T value)
 		{
 			_BaseClassInstance.SetValue ((T)value);
 
@@ -81,25 +82,29 @@ namespace Graph.Parameters
 			return other.GetType () == this.GetType () && other.Name == this.Name;
 		}
 
-		public  bool IsType<T> () where T : Parameter
+		public  bool Is<T> () where T : Parameter
 		{
 			return this.GetType () == typeof(T);
 		}
-
-		public T AsTypedParameter<T> () where T : Parameter
+		//TODO add casting error catch
+		public T As<T> () where T : Parameter
 		{
-			Debug.Log(this);
 			return (T)this;
 		}
 
 		public void Copy (Parameter parameter)
 		{
-			if (Match (parameter)) {
+			if (Match (parameter) && !Cached) {
 				_BaseClassInstance.SetValue (parameter.GetBase ().GetValue ());
 
 			} else {
 				Debug.Log ("Trying to copy incompatible parameters.");
 			}
+		}
+
+		public void SetCached ()
+		{
+			Cached = true;
 		}
 
 		//this will be used for backtracking later in edit propagation

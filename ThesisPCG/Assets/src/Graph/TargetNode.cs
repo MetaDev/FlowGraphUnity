@@ -12,82 +12,68 @@ using System.Net.Sockets;
 
 namespace Graph
 {
-	public class TargetNode : Node, ITargetNode
+	public abstract class TargetNode : Node, ITargetNode
 	{
 		
 
-		Dictionary<String,Parameter> InputParameters;
+		protected Dictionary<String,Parameter> InputParameters = new Dictionary<String,Parameter> ();
 
-		Dictionary<String,ISourceNode<Parameter>> InputSources;
+		protected Dictionary<String,IDisposable> InputSourcesConnection = new Dictionary<String,IDisposable> ();
 
 		public TargetNode (string name) : base (name)
 		{
-			init ();
 		}
 
 		public TargetNode (string name, Action consumeParameters) : base (name, consumeParameters)
 		{
-			init ();
 		}
 
-		private void init ()
-		{
-			this.InputParameters = new Dictionary<String,Parameter> ();
-			InputSources = new Dictionary<String,ISourceNode<Parameter>> ();
-		}
 
 		//check if parameters compatible
-		public void LinkTo (ISourceNode<Parameter> source)
+		public void LinkTo (params ISourceNode<Parameter>[] sources)
 		{
-			//check if targeted parameter matches
-			if (source.GetOutputParameter ().Match (source.GetOutputParameter ())) {
-				InputSources.Add (source.GetOutputParameter ().Name, source);
-
+			//check if all are matching
+			int matchings = 0;
+			int maxSourceSize = 1;
+			foreach (ISourceNode<Parameter> source in sources) {
+				String sourceParamName = source.GetOutputParameter ().Name;
+				if (InputParameters.ContainsKey (sourceParamName)) {
+					if (source.GetOutputParameter ().Match (InputParameters [sourceParamName])) {
+						maxSourceSize = Math.Max (source.GetSize (), maxSourceSize);
+						matchings++;
+					} else {
+						Debug.Log ("parameter type mismatch." + source.GetOutputParameter ().GetType ());
+					}
+				} else {
+					Debug.Log ("parameter name mismatch." + source.GetOutputParameter ().Name);
+				}
+			
 			}
-
-		}
-
-		public void AddInputParameter (Parameter inputParameter)
-		{
-			InputParameters [inputParameter.Name] = inputParameter;
-		}
-
-		public Parameter GetInputParameter (String parameterName)
-		{
-			if (InputParameters.ContainsKey (parameterName)) {
-				return InputParameters [parameterName];
-			} else {
-				Debug.Log ("Tring to acces unavailable parameter in Target");
-				return null;
-			}
-		}
-
-		public T GetInputParameter<T> (String parameterName) where T : Parameter
-		{
-			if (InputParameters.ContainsKey (parameterName)) {
-				return InputParameters [parameterName].AsTypedParameter<T> ();
-			} else {
-				Debug.Log ("Tring to acces unavailable parameter in Target");
-				return null;
-			}
-		}
-		//get each source of a parameter as an observable and subscribe
-		//when all sources finished consumeParameters
-		public override void Complete ()
-		{
-			Observable.WhenAll<Parameter> (InputSources.Values.Select (source => {
-				return source.AsObservable ();
-			})).Subscribe (sourceParameters => {
-				//copy all values form parameters
-				foreach (Parameter sourceParameter in sourceParameters) {
-					InputParameters [sourceParameter.Name].Copy (sourceParameter);
+			//zip if all sources match
+			//default values allowed
+			//if (matchings == sources.Count ()) {
+			Debug.Log (sources.Length);
+			var parameters = Observable.Zip<Parameter> (sources.Select ((source) => ((IObservable<Parameter>)source.AsObservable (maxSourceSize))));
+			//due to cast, we have to reconvert to hot observable
+			var hotParameters = parameters.Publish ();
+			hotParameters.Subscribe ((list) => {
+				//copy parameters
+				foreach (Parameter param in list) {
+					this.InputParameters [param.Name].Copy (param);
 				}
 				//consume them
 				Complete ();
-			}
-			);
-		
+			});
+			//sources.Select ((source) => (source.AsObservable (maxSourceSize))).
+			//}
+
 		}
+
+
+
+		//get each source of a parameter as an observable and subscribe
+		//when all sources finished consumeParameters
+
 
 	
 
