@@ -46,8 +46,8 @@ public class Test : MonoBehaviour
 		block.LinkTo (sample);
 
 
-		mapsource.Start ();
-		sample.Start ();
+		mapsource.Push ();
+		sample.Push ();
 	}
 
 	void parameterTest ()

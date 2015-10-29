@@ -1,8 +1,14 @@
 ﻿TODO
 
+hot observable of propagator is triggered but the first value is lost, can be fixed with dummy first 
+
+for inspiration http://stackoverflow.com/questions/8083357/adding-an-observable-sequence-after-subscription
+
+test propagator and refactor code for reuse of source and target code as much as possible
+
+implement default parameter with functional consume Parameters
 
 
-also complete a target every time all data is available not after all data has been passed 
 
 only return one instance of observable for each cycle of the dataflow graph
 cache if needed

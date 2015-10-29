@@ -9,6 +9,7 @@ using System.Collections;
 using UnityEngine;
 using Graph.Parameters;
 using System.Net.Sockets;
+using UnityEditor;
 
 namespace Graph
 {
@@ -20,18 +21,25 @@ namespace Graph
 
 		protected Dictionary<String,IDisposable> InputSourcesConnection = new Dictionary<String,IDisposable> ();
 
-		public TargetNode (string name) : base (name)
+		public TargetNode (string name, params Parameter[] inputParameters) : base (name)
 		{
+			SaveInputParameters (inputParameters);
 		}
 
-		public TargetNode (string name, Action consumeParameters) : base (name, consumeParameters)
+		public TargetNode (string name, Action consumeParameters, params Parameter[] inputParameters) : base (name, consumeParameters)
 		{
+			SaveInputParameters (inputParameters);
+
 		}
 
-		protected void AddInputParameter (Parameter param)
+		private void SaveInputParameters (Parameter[] inputParameters)
 		{
-			InputParameters.Add (param.Name, param);
+			foreach (Parameter param in inputParameters) {
+				InputParameters.Add (param.Name, param);
+			}
 		}
+
+	
 
 		//check if parameters compatible
 		public void LinkTo (params ISourceNode<Parameter>[] sources)
@@ -59,20 +67,26 @@ namespace Graph
 			var zip = sources.Select ((source) => (source.AsObservable (longestSourceSequence))).ToArray ();
 			var parameters = Observable.Zip<Parameter> (zip);
 
-			parameters.Subscribe ((list) => {
-				//copy parameters
-				foreach (Parameter param in list) {
-					Debug.Log (param.Name);
-					this.InputParameters [param.Name].Copy (param);
-				}
-				//consume them
-				Complete ();
+			var obs = parameters.Select ((list) => {
+				ConsumeParameters (list);
+				return Unit.Default;
+			}).Publish ();
+			//start hot observable on first received parameter
+			parameters.Take (2).Subscribe ((list) => {
+				ConsumeParameters (list);
+				obs.Connect ();
+				Debug.Log ("test");
 			});
-
 
 		}
 
+		public Dictionary<String,Parameter> GetInputParameters ()
+		{
+			return InputParameters;
+		}
 
+		public abstract void ConsumeParameters (IList<Parameter> parameters);
+	
 
 		//get each source of a parameter as an observable and subscribe
 		//when all sources finished consumeParameters

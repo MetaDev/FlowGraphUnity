@@ -22,7 +22,7 @@ namespace Graph
 			this._Complete = complete;
 		}
 
-		public abstract void Complete ();
+		//public abstract void Complete ();
 		//for inheritance purpose we use classes to define the Node Type
 		public class NodeType
 		{

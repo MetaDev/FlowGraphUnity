@@ -7,6 +7,8 @@ using Graph.Parameters;
 using UniRx;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Data
 {
@@ -15,7 +17,7 @@ namespace Data
 		
 		String FilePath;
 
-		public override void Complete ()
+		public override void LoadParameters (Parameter[] parameters)
 		{
 			byte[] test = File.ReadAllBytes (this.FilePath);
 			Texture2D image = new Texture2D (1, 1);
@@ -29,7 +31,7 @@ namespace Data
 			}
 			var par = new ColorMapParameter (this.OutputParameter.Name);
 			par.SetValue (ColorMap);
-			this.OutputParameterSequence.Add (par);
+			parameters [0] = par;
 		}
 
 

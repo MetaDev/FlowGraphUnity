@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Graph.Parameters;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace Graph
 {
@@ -18,7 +19,6 @@ namespace Graph
 
 		IConnectableObservable<Tout> AsObservable (int size);
 		//start emitting sources
-		void Start ();
 
 		int GetSize ();
 

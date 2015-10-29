@@ -20,17 +20,20 @@ namespace Graph
 			this.RangeY = rangeY;
 		}
 
-
-		public override void Complete ()
+		public override void LoadParameters (Parameter[] parameters)
 		{
+			int i = 0;		
 			for (int x = 0; x < RangeX; x++) {
 				for (int y = 0; y < RangeY; y++) {
+
 					IntegerVector2Parameter param = new IntegerVector2Parameter ("Position");
 					param.SetValue (new MathNet.Numerics.Tuple<int,int> (x, y));
-					this.OutputParameterSequence.Add (param);
+					parameters [i] = param;
+					i++;
 				}
 			}
 		}
+
 
 
 

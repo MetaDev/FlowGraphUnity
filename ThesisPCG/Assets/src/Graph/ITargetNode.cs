@@ -11,5 +11,7 @@ namespace Graph
 	public interface ITargetNode : INode
 	{
 		void LinkTo (params ISourceNode<Parameter>[] sources);
+
+		void ConsumeParameters (IList<Parameter> parameters);
 	}
 }

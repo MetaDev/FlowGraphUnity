@@ -16,22 +16,23 @@ namespace Graph
 		//the source node port
 		public  Parameter OutputParameter{ get; private set; }
 		//the sequence of values
-		protected List<Parameter> OutputParameterSequence { get; set; }
+		public Parameter[] OutputParameterSequence { get; private set; }
 
 		protected List<IConnectableObservable<Parameter>> ObservableSources = new List<IConnectableObservable<Parameter>> ();
 
-		public int Size{ get { return OutputParameterSequence.Capacity; } }
+		public int Size{ get; set; }
 
 		public SourceNode (string name, int size, Parameter outputParameter) : base (name)
 		{
 			this.OutputParameter = outputParameter;
-			OutputParameterSequence = new List<Parameter> (size);
+			this.Size = size;
+			OutputParameterSequence = new Parameter [size];
 		}
 
 		public SourceNode (string name, int size, Action complete, Parameter outputParameter) : base (name, complete)
 		{
 			this.OutputParameter = outputParameter;
-			OutputParameterSequence = new List<Parameter> (size);
+			OutputParameterSequence = new Parameter [size];
 
 		}
 
@@ -72,10 +73,10 @@ namespace Graph
 			return  HotObservableSource;
 		}
 		//start sending sources
-		public void Start ()
+		public  void Push ()
 		{
 			//load data
-			Complete ();
+			LoadParameters (OutputParameterSequence);
 			//start emitting saved values
 			foreach (IConnectableObservable<Parameter> hot in ObservableSources) {
 				hot.Connect ();
@@ -83,6 +84,7 @@ namespace Graph
 		}
 
 
+		public abstract void LoadParameters (Parameter[] parameters);
 
 
 
