@@ -18,9 +18,8 @@ namespace Generator
 			color.SetValue (new Color (0.1f, 0.20f, 0.3f));
 		}
 
-		public override void ConsumeParameters (IList<Parameter> parameters)
+		protected override void ConsumeParameters (IList<Parameter> parameters)
 		{
-			IntegerVector2Parameter position = (IntegerVector2Parameter)parameters [0];
 			//set position
 			GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
 			cube.transform.position = new Vector3 (position.GetValue1 (), 0, position.GetValue2 ());

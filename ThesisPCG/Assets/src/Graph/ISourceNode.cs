@@ -15,16 +15,13 @@ namespace Graph
 	{
 		//return source as observable based on its output parameter
 		//maybe use generic observable to hide casting inside sourcenode,
-		IConnectableObservable<Tout> AsObservable ();
+		IObservable<Tout> AsObservable ();
 
-		IConnectableObservable<Tout> AsObservable (int size);
-		//start emitting sources
+		IObservable<Tout> AsObservable (int size);
 
 		int GetSize ();
 
 		Tout GetOutputParameter ();
-
-
 
 
 	}

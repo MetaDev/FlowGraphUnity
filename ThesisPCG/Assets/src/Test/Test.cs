@@ -27,7 +27,7 @@ public class Test : MonoBehaviour
 
 	void nodeTest ()
 	{
-		var sample = new SampleNode (2, 2);
+		var sample = new SampleNode (5, 5);
 		//var colormap = new SampleMapColorNode ();
 		var block = new BlockGenerator ();
 		var mapsource = new BitmapSourceNode ("Assets/Resources/bitmaps/bitmaptest.png");

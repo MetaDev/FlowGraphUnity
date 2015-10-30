@@ -14,7 +14,7 @@ namespace Graph
 	public abstract class SourceNode: Node, ISourceNode<Parameter>
 	{
 		//the source node port
-		public  Parameter OutputParameter{ get; private set; }
+		public  Parameter OutputParameter;
 		//the sequence of values
 		public Parameter[] OutputParameterSequence { get; private set; }
 
@@ -29,12 +29,7 @@ namespace Graph
 			OutputParameterSequence = new Parameter [size];
 		}
 
-		public SourceNode (string name, int size, Action complete, Parameter outputParameter) : base (name, complete)
-		{
-			this.OutputParameter = outputParameter;
-			OutputParameterSequence = new Parameter [size];
 
-		}
 
 		public Parameter GetOutputParameter ()
 		{
@@ -52,15 +47,14 @@ namespace Graph
 
 		//different observables need to be returned for array and matrix parameters
 		//in this method check if a new iteration is started, if so return new observable
-		public  IConnectableObservable<Parameter> AsObservable ()
+		public  IObservable<Parameter> AsObservable ()
 		{
 			var ObservableSource = AsObservable (this.Size);
-			ObservableSources.Add (ObservableSource);
 			return  ObservableSource;
 		}
 
 
-		public  IConnectableObservable<Parameter> AsObservable (int size)
+		public  IObservable<Parameter> AsObservable (int size)
 		{
 			//check size
 			if (size % Size != 0) {
@@ -73,7 +67,7 @@ namespace Graph
 			return  HotObservableSource;
 		}
 		//start sending sources
-		public  void Push ()
+		public void Push ()
 		{
 			//load data
 			LoadParameters (OutputParameterSequence);

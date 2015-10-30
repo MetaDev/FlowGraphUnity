@@ -16,6 +16,7 @@ namespace Data
 	{
 		
 		String FilePath;
+		static ColorMapParameter outColorMap = new ColorMapParameter ("colormap");
 
 		public override void LoadParameters (Parameter[] parameters)
 		{
@@ -23,21 +24,19 @@ namespace Data
 			Texture2D image = new Texture2D (1, 1);
 			image.LoadImage (test);
 			Color[] ColorMapLine = image.GetPixels ();
-			Color[,] ColorMap = new Color[image.height, image.width];
+			Color[,] ColorMapArray = new Color[image.height, image.width];
 			foreach (int i in Enumerable.Range(0,image.height)) {
 				foreach (int j in Enumerable.Range(0,image.width)) {
-					ColorMap [i, j] = ColorMapLine [i * image.height + j];
+					ColorMapArray [i, j] = ColorMapLine [i * image.height + j];
 				}
 			}
-			var par = new ColorMapParameter (this.OutputParameter.Name);
-			par.SetValue (ColorMap);
-			parameters [0] = par;
+			outColorMap.SetValue (ColorMapArray);
 		}
 
 
 
 
-		public BitmapSourceNode (string filePath) : base ("Bitmap Source Node", 1, new ColorMapParameter ("color"))
+		public BitmapSourceNode (string filePath) : base ("Bitmap Source Node", 1, outColorMap)
 		{
 			this.FilePath = filePath;
 		

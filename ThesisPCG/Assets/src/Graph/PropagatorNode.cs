@@ -12,14 +12,18 @@ namespace Graph
 {
 	public abstract class PropagatorNode : Node,IPropagatorNode<Parameter>
 	{
-		private TargetNode Target;
+		
+		private Dictionary<String,Parameter> InputParameters = new Dictionary<String,Parameter> ();
 
-		private SourceNode Source;
+		private int Size;
 
-		public PropagatorNode (string name, TargetNode target, SourceNode source) : base (name)
+		//the source node port
+		private  Parameter OutputParameter;
+
+		public PropagatorNode (string name, Parameter outputParameter, params Parameter[] inputParameters) : base (name)
 		{
-			this.Target = target;
-			this.Source = source;
+			this.OutputParameter = outputParameter;
+			TargetNode.SaveInputParameters (InputParameters, inputParameters);
 		}
 
 
@@ -28,16 +32,14 @@ namespace Graph
 
 		public Parameter GetOutputParameter ()
 		{
-			return Source.GetOutputParameter ();
+			return OutputParameter;
 		}
 
-		IConnectableObservable<Parameter> obs;
+		IObservable<Parameter> obs;
 
-		//Calculate ouputparameter of the node with inputparameters from the target
 
 	
 		
-		public abstract Parameter Transform ();
 
 		public void LinkTo (params ISourceNode<Parameter>[] sources)
 		{
@@ -46,8 +48,8 @@ namespace Graph
 			int longestSourceSequence = 1;
 			foreach (ISourceNode<Parameter> source in sources) {
 				String sourceParamName = source.GetOutputParameter ().Name;
-				if (Target.GetInputParameters ().ContainsKey (sourceParamName)) {
-					if (source.GetOutputParameter ().Match (Target.GetInputParameters () [sourceParamName])) {
+				if (InputParameters.ContainsKey (sourceParamName)) {
+					if (source.GetOutputParameter ().Match (InputParameters [sourceParamName])) {
 						longestSourceSequence = Math.Max (source.GetSize (), longestSourceSequence);
 						matchings++;
 					} else {
@@ -58,11 +60,11 @@ namespace Graph
 				}
 			
 			}
-			Source.Size = longestSourceSequence;
+			this.Size = longestSourceSequence;
 			//zip if all sources match
 			//default values allowed
 			//if (matchings == sources.Count ()) {
-			var zip = new List<IConnectableObservable<Parameter>> ();
+			var zip = new List<IObservable<Parameter>> ();
 			foreach (ISourceNode<Parameter> t in sources) {
 				zip.Add (t.AsObservable (longestSourceSequence));
 			}
@@ -70,40 +72,38 @@ namespace Graph
 			var parameters = Observable.Zip<Parameter> (tets);
 			//transform 
 			obs = parameters.Select ((list) => {
-				ConsumeParameters (list);
+				//side effect, cache output value
+				GetOutputParameter ().Copy (TransformParameter (list));
+				//transmit to next source
 				return GetOutputParameter ();
-			}).Publish ();
-			//start hot observable on first received parameter
-			parameters.Take (1).Do ((list) => {
-				obs.Connect ();
 			});
-
-		
+			//the source is a hot observable thus subcribing to the transformed zip won't output until sources output
+			obs.Subscribe ();
 		}
 
-		public IConnectableObservable<Parameter> AsObservable ()
+		public IObservable<Parameter> AsObservable ()
 		{
 			return obs;
 		}
 
-		public IConnectableObservable<Parameter> AsObservable (int size)
+		public IObservable<Parameter> AsObservable (int size)
 		{
-			throw new NotImplementedException ();
+			//check size
+			if (size % Size != 0) {
+				throw new ArgumentOutOfRangeException ("The size of the sequence doesnt match the requested sequence size");
+			}
+			var repeatSize = size / this.Size;
+			return obs.Repeat<Parameter> ().Take (repeatSize * Size);
 		}
 
 
-
-
-		public void ConsumeParameters (IList<Parameter> parameters)
-		{
-			TransformParameter (parameters, GetOutputParameter ());
-		}
-
-		public abstract Parameter TransformParameter (IList<Parameter> inputParameters, Parameter outputParameter);
+		//Calculate ouputparameter of the node with inputparameters from the target
+		//save new value in outputparameter and retrun it
+		protected abstract Parameter TransformParameter (IList<Parameter> inputParameters);
 
 		public int GetSize ()
 		{
-			return Source.GetSize ();
+			return Size;
 		}
 
 

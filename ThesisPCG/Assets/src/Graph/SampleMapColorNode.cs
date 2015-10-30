@@ -1,29 +1,29 @@
-﻿//using System;
-//using Graph.Parameters;
-//
-//namespace Graph
-//{
-//	//read color map and position, return color
-//	public class SampleMapColorNode : PropagatorNode 
-//	{
-//		public SampleMapColorNode () : base ("Sample Map Color",new ColorParameter("Color"))
-//		{
-//			//set input parameters
-//			Parameter inputMap = new ColorMapParameter ("Colormap");
-//			this.AddInputParameter(inputMap);
-//			Parameter position = new IntegerVector2Parameter ("Position");
-//			this.AddInputParameter(position);
-//		
-//		}
-//		//read colors from map
-//		protected override void Transform ()
-//		{
-//			var pos = this.GetInputParameter<IntegerVector2Parameter> ("Position").GetValue ();
-//			var map = this.GetInputParameter <ColorMapParameter>("Colormap").GetValue ();
-//			var col = map[pos.Item1,pos.Item2];
-//			GetOutputParameter<ColorParameter> ().SetValue (col);
-//		}
-//
-//	}
-//}
-//
+﻿using System;
+using Graph.Parameters;
+using System.Collections.Generic;
+
+namespace Graph
+{
+	//read color map and position, return color
+	public class SampleMapColorNode : PropagatorNode
+	{
+		static ColorParameter outColor = new ColorParameter ("Color");
+		static IntegerVector2Parameter inPosition = new IntegerVector2Parameter ("Position");
+		static ColorMapParameter inColorMap = new ColorMapParameter ("colormap");
+
+		public SampleMapColorNode () : base ("Sample Map Color", outColor, inPosition, inColorMap)
+		{
+			
+		
+		}
+		//read colors from map
+		protected override Parameter TransformParameter (IList<Parameter> inputParameters)
+		{
+			var col = inColorMap.GetValue () [inPosition.GetValue1 (), inPosition.GetValue2 ()];
+			outColor.SetValue (col);
+			return outColor;
+		}
+
+	}
+}
+

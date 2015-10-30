@@ -19,20 +19,16 @@ namespace Graph
 
 		private Dictionary<String,Parameter> InputParameters = new Dictionary<String,Parameter> ();
 
-		protected Dictionary<String,IDisposable> InputSourcesConnection = new Dictionary<String,IDisposable> ();
+		protected IDisposable InputSourcesConnection;
 
 		public TargetNode (string name, params Parameter[] inputParameters) : base (name)
 		{
-			SaveInputParameters (inputParameters);
+			SaveInputParameters (InputParameters, inputParameters);
 		}
 
-		public TargetNode (string name, Action consumeParameters, params Parameter[] inputParameters) : base (name, consumeParameters)
-		{
-			SaveInputParameters (inputParameters);
+	
 
-		}
-
-		private void SaveInputParameters (Parameter[] inputParameters)
+		public static void SaveInputParameters (Dictionary<String,Parameter> InputParameters, Parameter[] inputParameters)
 		{
 			foreach (Parameter param in inputParameters) {
 				InputParameters.Add (param.Name, param);
@@ -67,16 +63,20 @@ namespace Graph
 			var zip = sources.Select ((source) => (source.AsObservable (longestSourceSequence))).ToArray ();
 			var parameters = Observable.Zip<Parameter> (zip);
 
-			var obs = parameters.Select ((list) => {
-				ConsumeParameters (list);
+			InputSourcesConnection = parameters.Select ((list) => {
+				//update parameters
+				foreach (Parameter param in list) {
+					InputParameters [param.Name].Copy (param);
+				}
+				ConsumeParameters (InputParameters.Values.ToList ());
 				return Unit.Default;
-			}).Publish ();
+			}).Subscribe ();
 			//start hot observable on first received parameter
-			parameters.Take (2).Subscribe ((list) => {
-				ConsumeParameters (list);
-				obs.Connect ();
-				Debug.Log ("test");
-			});
+//			parameters.Take (2).Subscribe ((list) => {
+//				ConsumeParameters (list);
+//				obs.Connect ();
+//				Debug.Log ("test");
+//			});
 
 		}
 
@@ -85,7 +85,7 @@ namespace Graph
 			return InputParameters;
 		}
 
-		public abstract void ConsumeParameters (IList<Parameter> parameters);
+		protected abstract void ConsumeParameters (IList<Parameter> parameters);
 	
 
 		//get each source of a parameter as an observable and subscribe

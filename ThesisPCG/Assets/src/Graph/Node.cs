@@ -7,7 +7,6 @@ namespace Graph
 	{
 
 		protected int _NodeType;
-		protected Action _Complete;
 
 		public string Name{ get; private set; }
 
@@ -16,11 +15,7 @@ namespace Graph
 			this.Name = name;
 		}
 
-		public Node (string name, Action complete)
-		{
-			this.Name = name;
-			this._Complete = complete;
-		}
+
 
 		//public abstract void Complete ();
 		//for inheritance purpose we use classes to define the Node Type
