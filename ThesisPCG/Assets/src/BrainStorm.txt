@@ -1,44 +1,20 @@
 ﻿TODO
 
-hot observable of propagator is triggered but the first value is lost, can be fixed with dummy first 
 
-for inspiration http://stackoverflow.com/questions/8083357/adding-an-observable-sequence-after-subscription
 
 test propagator and refactor code for reuse of source and target code as much as possible
 
-implement default parameter with functional consume Parameters
+implement default parameter with functional consume Parameters, if an input parameter has only 1 value
+set the parameter to cached and no longer call AsObservable on it in the link to
 
 
-
-only return one instance of observable for each cycle of the dataflow graph
-cache if needed
-
-
-create wrapper class for arrayparameter and matrix parameter as they have different
-
-http://leecampbell.blogspot.be/2010/08/rx-part-7-hot-and-cold-observables.html
-
-gebruik (multicast, subject)
-
-instead of saveing the soruces in the target save only the link
-
-
-add a repeat mode (alternating, copy,...) to a source
-
-add Builder pattern to construct the different types of configures source nodes
-
+add a repeat mode (alternating, copy,interpolate...) to a source of length >1
 
 
 for target node make set as inputParameters instead of dictionary
 
 create differen classes for parameters as ports and parameters as values
 
-allow parameter constructor with default value
-
-values without default have to be linked, check this
-
-
-try to find a solution for compile time checkign of parameter names, please
 
 
 //this will be used for backtracking later in edit propagation
