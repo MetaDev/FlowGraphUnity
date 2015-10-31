@@ -71,6 +71,7 @@ namespace Graph
 		{
 			//load data
 			LoadParameters (OutputParameterSequence);
+            Debug.Log("test");
 			//start emitting saved values
 			foreach (IConnectableObservable<Parameter> hot in ObservableSources) {
 				hot.Connect ();
