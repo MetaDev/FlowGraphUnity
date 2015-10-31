@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace DataLayer
+namespace Data
 {
 	public abstract class RandomParameter 
 

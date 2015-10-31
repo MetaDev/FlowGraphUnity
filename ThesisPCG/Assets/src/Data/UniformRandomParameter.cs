@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataLayer
+namespace Data
 {
 	public class UniformRandomParameter : RandomParameter
 	{
