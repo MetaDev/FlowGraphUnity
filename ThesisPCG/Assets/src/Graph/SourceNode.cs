@@ -13,28 +13,19 @@ namespace Graph
 {
 	public abstract class SourceNode: Node, ISourceNode<Parameter>
 	{
-		//the source node port
-		public  Parameter OutputParameter;
-		//the sequence of values
-		public Parameter[] OutputParameterSequence { get; private set; }
+	
 
 		protected List<IConnectableObservable<Parameter>> ObservableSources = new List<IConnectableObservable<Parameter>> ();
 
 		public int Size{ get; set; }
 
-		public SourceNode (string name, int size, Parameter outputParameter) : base (name)
+		public SourceNode (string name, int size) : base (name)
 		{
-			this.OutputParameter = outputParameter;
 			this.Size = size;
-			OutputParameterSequence = new Parameter [size];
 		}
 
 
 
-		public Parameter GetOutputParameter ()
-		{
-			return OutputParameter;
-		}
 
 		public int GetSize ()
 		{
@@ -61,17 +52,17 @@ namespace Graph
 				throw new ArgumentOutOfRangeException ("The size of the sequence doesnt match the requested sequence size");
 			}
 			var repeatSize = size / this.Size;
-			var ObservableSource = Observable.ToObservable (OutputParameterSequence);
+            //load parameters and transform into stream
+			var ObservableSource = Observable.ToObservable (LoadParameters());
 			IConnectableObservable<Parameter> HotObservableSource = ObservableSource.Repeat<Parameter> ().Take (repeatSize * Size).Publish ();
-			ObservableSources.Add (HotObservableSource);
+            //save new stream
+            ObservableSources.Add (HotObservableSource);
 			return  HotObservableSource;
 		}
 		//start sending sources
 		public void Push ()
 		{
-			//load data
-			LoadParameters (OutputParameterSequence);
-            Debug.Log("test");
+			
 			//start emitting saved values
 			foreach (IConnectableObservable<Parameter> hot in ObservableSources) {
 				hot.Connect ();
@@ -79,10 +70,8 @@ namespace Graph
 		}
 
 
-		public abstract void LoadParameters (Parameter[] parameters);
-
-
-
-	}
+		public abstract Parameter[]  LoadParameters ();
+        public abstract Parameter GetOutputParameterType();
+    }
 }
 

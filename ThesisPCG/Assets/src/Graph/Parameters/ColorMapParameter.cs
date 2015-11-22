@@ -7,8 +7,9 @@ namespace Graph.Parameters
 {
 	public class ColorMapParameter : Parameter, I2DParameter<Color>
 	{
-		public ColorMapParameter (string name) : base (name)
+		public ColorMapParameter (string name, int width, int height) : base (name)
 		{
+            this.SetValue(new Color[width, height]);
 		}
 
 		public Color[,] GetValue ()

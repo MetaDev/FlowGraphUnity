@@ -1,12 +1,30 @@
 ﻿TODO
 
 
+only create different stream in source node if the requested size is different -> remove size but use interpolation or error on imcompatible size
+
+move project to project folder in drive
+
+throw warning when trying to change linke between nodes
+
+ask rian about crash
+
+on linkto of target node check at run time the order of the parameters
+
+create a seperate class called ParameterType that is a parameter without values
+and rename to other to ParameterWrapper
+
+->try to work with immutable objects, especially the parameters
+
+add a method dimension to the parameters, as the dimensions of parameters should match too
+Parameter can be a multidimensional vector
+
+try to throw the possible class cast exception in a parameter verbally
 
 test propagator and refactor code for reuse of source and target code as much as possible
 
 implement default parameter with functional consume Parameters, if an input parameter has only 1 value
 set the parameter to cached and no longer call AsObservable on it in the link to
-
 
 add a repeat mode (alternating, copy,interpolate...) to a source of length >1
 

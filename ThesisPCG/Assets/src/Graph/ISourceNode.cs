@@ -21,7 +21,7 @@ namespace Graph
 
 		int GetSize ();
 
-		Tout GetOutputParameter ();
+		Tout GetOutputParameterType ();
 
 
 	}

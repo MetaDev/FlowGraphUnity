@@ -20,8 +20,11 @@ namespace Generator
 
 		protected override void ConsumeParameters (IList<Parameter> parameters)
 		{
-			//set position
-			GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
+            //
+            IntegerVector2Parameter position = parameters[0].As< IntegerVector2Parameter>();
+            ColorParameter color = parameters[1].As<ColorParameter>();
+            //set position
+            GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
 			cube.transform.position = new Vector3 (position.GetValue1 (), 0, position.GetValue2 ());
 			//set color
 			cube.GetComponent<Renderer> ().material.color = color.GetValue ();

@@ -20,43 +20,37 @@ namespace Graph
 		//the source node port
 		private  Parameter OutputParameter;
 
-		public PropagatorNode (string name, Parameter outputParameter, params Parameter[] inputParameters) : base (name)
+		public PropagatorNode (string name,  params Parameter[] inputParameters) : base (name)
 		{
-			this.OutputParameter = outputParameter;
 			TargetNode.SaveInputParameters (InputParameters, inputParameters);
 		}
 
 
 
 
-
-		public Parameter GetOutputParameter ()
-		{
-			return OutputParameter;
-		}
+		
 
 		IObservable<Parameter> obs;
-
-
-	
-		
 
 		public void LinkTo (params ISourceNode<Parameter>[] sources)
 		{
 			//check if all are matching
+            //TODO
+            //check if all are present
+            //check if the order is correct
 			int matchings = 0;
 			int longestSourceSequence = 1;
 			foreach (ISourceNode<Parameter> source in sources) {
-				String sourceParamName = source.GetOutputParameter ().Name;
+				String sourceParamName = source.GetOutputParameterType().Name;
 				if (InputParameters.ContainsKey (sourceParamName)) {
-					if (source.GetOutputParameter ().Match (InputParameters [sourceParamName])) {
+					if (source.GetOutputParameterType().Match (InputParameters [sourceParamName])) {
 						longestSourceSequence = Math.Max (source.GetSize (), longestSourceSequence);
 						matchings++;
 					} else {
-						Debug.Log ("parameter type mismatch." + source.GetOutputParameter ().GetType ());
+						Debug.Log ("parameter type mismatch." + source.GetOutputParameterType().GetType ());
 					}
 				} else {
-					Debug.Log ("parameter name mismatch." + source.GetOutputParameter ().Name);
+					Debug.Log ("parameter name mismatch: " + source.GetOutputParameterType().Name);
 				}
 			
 			}
@@ -72,10 +66,10 @@ namespace Graph
 			var parameters = Observable.Zip<Parameter> (tets);
 			//transform 
 			obs = parameters.Select ((list) => {
-				//side effect, cache output value
-				GetOutputParameter ().Copy (TransformParameter (list));
+                //side effect, cache output value
+                OutputParameter = (TransformParameter (list));
 				//transmit to next source
-				return GetOutputParameter ();
+				return OutputParameter;
 			});
 			//the source is a hot observable thus subcribing to the transformed zip won't output until sources output
 			obs.Subscribe ();
@@ -83,7 +77,7 @@ namespace Graph
 
 		public IObservable<Parameter> AsObservable ()
 		{
-			return obs;
+			return AsObservable(this.Size);
 		}
 
 		public IObservable<Parameter> AsObservable (int size)
@@ -106,7 +100,7 @@ namespace Graph
 			return Size;
 		}
 
-
-	}
+        public abstract Parameter GetOutputParameterType();
+    }
 }
 

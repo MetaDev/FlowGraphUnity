@@ -1,42 +1,42 @@
 ﻿using System;
 using Graph;
-using MathNet.Numerics.LinearAlgebra;
 using UnityEngine;
-using System.Threading.Tasks;
 using Graph.Parameters;
-using UniRx;
 using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections;
 
 namespace Data
 {
-	public class BitmapSourceNode : SourceNode
+    public class BitmapSourceNode : SourceNode
 	{
 		
 		String FilePath;
-		static ColorMapParameter outColorMap = new ColorMapParameter ("colormap");
+        Parameter OutputType = new ColorMapParameter("Colormap",1,1);
 
-		public override void LoadParameters (Parameter[] parameters)
+        public override Parameter[] LoadParameters ()
 		{
-			byte[] test = File.ReadAllBytes (this.FilePath);
+            ColorMapParameter[] outColorMap = new ColorMapParameter[1];
+            byte[] test = File.ReadAllBytes (this.FilePath);
 			Texture2D image = new Texture2D (1, 1);
 			image.LoadImage (test);
 			Color[] ColorMapLine = image.GetPixels ();
-			Color[,] ColorMapArray = new Color[image.height, image.width];
-			foreach (int i in Enumerable.Range(0,image.height)) {
-				foreach (int j in Enumerable.Range(0,image.width)) {
-					ColorMapArray [i, j] = ColorMapLine [i * image.height + j];
+            Debug.Log(ColorMapLine[1].g);
+            outColorMap[0] = new ColorMapParameter("Colormap", image.height, image.width);
+            for (int i= 0; i < image.height;i++) {
+				for (int j = 0; j < image.width; j++) {
+                    //Debug.Log(i + " "+j);
+                    outColorMap[0].SetValue(i, j,  ColorMapLine [i * image.height + j]);
 				}
 			}
-			outColorMap.SetValue (ColorMapArray);
+            Debug.Log(outColorMap[0].GetValue(2, 3).g);
+            return outColorMap;
 		}
 
+        public override Parameter GetOutputParameterType()
+        {
+            return OutputType;
+        }
 
-
-
-		public BitmapSourceNode (string filePath) : base ("Bitmap Source Node", 1, outColorMap)
+        public BitmapSourceNode (string filePath) : base ("Bitmap Source Node", 1)
 		{
 			this.FilePath = filePath;
 		

@@ -28,10 +28,10 @@ namespace Graph
 
 	
 
-		public static void SaveInputParameters (Dictionary<String,Parameter> InputParameters, Parameter[] inputParameters)
+		public static void SaveInputParameters (Dictionary<String,Parameter> InputDict, Parameter[] inputParameters)
 		{
 			foreach (Parameter param in inputParameters) {
-				InputParameters.Add (param.Name, param);
+                InputDict.Add (param.Name, param);
 			}
 		}
 
@@ -44,16 +44,16 @@ namespace Graph
 			int matchings = 0;
 			int longestSourceSequence = 1;
 			foreach (ISourceNode<Parameter> source in sources) {
-				String sourceParamName = source.GetOutputParameter ().Name;
+				String sourceParamName = source.GetOutputParameterType().Name;
 				if (InputParameters.ContainsKey (sourceParamName)) {
-					if (source.GetOutputParameter ().Match (InputParameters [sourceParamName])) {
+					if (source.GetOutputParameterType ().Match (InputParameters [sourceParamName])) {
 						longestSourceSequence = Math.Max (source.GetSize (), longestSourceSequence);
 						matchings++;
 					} else {
-						Debug.Log ("parameter type mismatch." + source.GetOutputParameter ().GetType ());
+						Debug.Log ("parameter type mismatch." + source.GetOutputParameterType ().GetType ());
 					}
 				} else {
-					Debug.Log ("parameter name mismatch." + source.GetOutputParameter ().Name);
+					Debug.Log ("parameter name mismatch." + source.GetOutputParameterType ().Name);
 				}
 			
 			}

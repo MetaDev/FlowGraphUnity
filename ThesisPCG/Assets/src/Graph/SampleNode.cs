@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using MathNet.Numerics;
 using UniRx;
 using System.Linq;
+using UnityEngine;
 
 namespace Graph
 {
@@ -13,16 +14,22 @@ namespace Graph
 	{
 		private int RangeX;
 		private int RangeY;
-
-		public SampleNode (int rangeX, int rangeY) : base ("Sample Node", rangeX * rangeY, new IntegerVector2Parameter ("Position"))
+        private Parameter OutputYpe = new IntegerVector2Parameter("Position");
+        public SampleNode (int rangeX, int rangeY) : base ("Sample Node", rangeX * rangeY)
 		{
 			this.RangeX = rangeX;
 			this.RangeY = rangeY;
 		}
 
-		public override void LoadParameters (Parameter[] parameters)
+        public override Parameter GetOutputParameterType()
+        {
+            return OutputYpe;
+        }
+
+        public override Parameter[] LoadParameters ()
 		{
-			int i = 0;		
+            IntegerVector2Parameter[] parameters = new IntegerVector2Parameter[this.Size];
+            int i = 0;		
 			for (int x = 0; x < RangeX; x++) {
 				for (int y = 0; y < RangeY; y++) {
 
@@ -32,13 +39,9 @@ namespace Graph
 					i++;
 				}
 			}
+            return parameters;
 		}
 
-
-
-
-		//the range could be loaded from a config file
-		//the loading would than be done in complete
 
 	}
 }
