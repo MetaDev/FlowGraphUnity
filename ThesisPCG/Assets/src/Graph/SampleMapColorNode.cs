@@ -9,24 +9,24 @@ namespace Graph
     public class SampleMapColorNode : PropagatorNode
 	{
 		ColorParameter outColor = new ColorParameter ("Color");
+        ColorMapParameter colorMap;
 
-
-		public SampleMapColorNode () : base ("Sample Map Color", new IntegerVector2Parameter("Position"), new ColorMapParameter("Colormap",1,1))
-		{	
-		}
+        public SampleMapColorNode (ColorMapParameter colorMap) : base ("Sample Map Color", new IntegerVector2Parameter("Position"))
+		{
+            this.colorMap = colorMap;
+        }
 
 		//read colors from map
-		protected override Parameter TransformParameter (IList<Parameter> parameters)
+		protected override Parameter TransformParameter (Dictionary<String,Parameter> parameters)
 		{  
-            IntegerVector2Parameter position = parameters[0].As<IntegerVector2Parameter>();
-            ColorMapParameter colorMap = parameters[1].As<ColorMapParameter>();
-            var col = colorMap.GetValue () [position.GetValue1 (), position.GetValue2 ()];
-            ColorParameter outColor = new ColorParameter("Color");
-            outColor.SetValue (col);
-			return outColor;
+            IntegerVector2Parameter position = parameters["Position"].As<IntegerVector2Parameter>();
+            var col = colorMap.GetValue (position.GetValue().Item1, position.GetValue ().Item2);
+            outColor = new ColorParameter("Color");
+            outColor.SetValue(col);
+            return outColor;
 		}
 
-        public override Parameter GetOutputParameterType()
+        public override Parameter PortParameter()
         {
            return outColor;
         }

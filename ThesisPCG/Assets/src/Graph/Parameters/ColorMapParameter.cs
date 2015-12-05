@@ -11,8 +11,11 @@ namespace Graph.Parameters
 		{
             this.SetValue(new Color[width, height]);
 		}
+        public ColorMapParameter(string name) : base(name)
+        {
+        }
 
-		public Color[,] GetValue ()
+        public Color[,] GetValue ()
 		{
 			return this.GetValue<Color[,]> ();
 		}

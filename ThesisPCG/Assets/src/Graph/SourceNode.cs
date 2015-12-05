@@ -11,67 +11,46 @@ using System.Security.Cryptography;
 
 namespace Graph
 {
-	public abstract class SourceNode: Node, ISourceNode<Parameter>
-	{
+	public abstract class SourceNode: Node, ISourceNode<Parameter> 
+    {
 	
 
-		protected List<IConnectableObservable<Parameter>> ObservableSources = new List<IConnectableObservable<Parameter>> ();
+		protected IConnectableObservable<Parameter> ObservableSource;
 
-		public int Size{ get; set; }
 
-		public SourceNode (string name, int size) : base (name)
+
+		public SourceNode (string name) : base (name)
 		{
-			this.Size = size;
-		}
 
-
-
-
-		public int GetSize ()
+        }
+		
+		//default implementation of a single value observable, only usable for static single value data sources
+		public virtual IObservable<Parameter> AsObservable ()
 		{
-			return Size;
-		}
-		//if the source is requested as observable, return just the result
-		//here also a check should be done whether the task that is responsible for calculating the result is finished
-		//and if the result is up to date
-		//if not a promise should returned of the result after the task finishe
+            //load default parameter and transform into stream
+            if (ObservableSource == null)
+            {
 
-		//different observables need to be returned for array and matrix parameters
-		//in this method check if a new iteration is started, if so return new observable
-		public  IObservable<Parameter> AsObservable ()
+                    ObservableSource = Observable.ToObservable(StreamParameter()).Publish();
+       
+            }
+            
+            return ObservableSource;
+        }
+       
+
+
+        //start sending sources
+        public void Push ()
 		{
-			var ObservableSource = AsObservable (this.Size);
-			return  ObservableSource;
-		}
+            ObservableSource.Connect();
+        }
 
+        //returns parameter type as well, we'll use this to check the parameter type until generics are sorted out
+		public abstract Parameter PortParameter ();
+        public abstract IEnumerable<Parameter> StreamParameter();
+      
 
-		public  IObservable<Parameter> AsObservable (int size)
-		{
-			//check size
-			if (size % Size != 0) {
-				throw new ArgumentOutOfRangeException ("The size of the sequence doesnt match the requested sequence size");
-			}
-			var repeatSize = size / this.Size;
-            //load parameters and transform into stream
-			var ObservableSource = Observable.ToObservable (LoadParameters());
-			IConnectableObservable<Parameter> HotObservableSource = ObservableSource.Repeat<Parameter> ().Take (repeatSize * Size).Publish ();
-            //save new stream
-            ObservableSources.Add (HotObservableSource);
-			return  HotObservableSource;
-		}
-		//start sending sources
-		public void Push ()
-		{
-			
-			//start emitting saved values
-			foreach (IConnectableObservable<Parameter> hot in ObservableSources) {
-				hot.Connect ();
-			}
-		}
-
-
-		public abstract Parameter[]  LoadParameters ();
-        public abstract Parameter GetOutputParameterType();
     }
 }
 

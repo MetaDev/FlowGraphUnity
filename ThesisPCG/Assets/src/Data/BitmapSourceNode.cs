@@ -2,46 +2,31 @@
 using Graph;
 using UnityEngine;
 using Graph.Parameters;
-using System.IO;
+using System.Collections.Generic;
 
 namespace Data
 {
-    public class BitmapSourceNode : SourceNode
+    public class TextureSourceNode : ColorMapParameter
 	{
 		
-		String FilePath;
-        Parameter OutputType = new ColorMapParameter("Colormap",1,1);
+		
 
-        public override Parameter[] LoadParameters ()
+        public TextureSourceNode (Texture2D image) : base ("Bitmap")
 		{
-            ColorMapParameter[] outColorMap = new ColorMapParameter[1];
-            byte[] test = File.ReadAllBytes (this.FilePath);
-			Texture2D image = new Texture2D (1, 1);
-			image.LoadImage (test);
-			Color[] ColorMapLine = image.GetPixels ();
-            Debug.Log(ColorMapLine[1].g);
-            outColorMap[0] = new ColorMapParameter("Colormap", image.height, image.width);
-            for (int i= 0; i < image.height;i++) {
-				for (int j = 0; j < image.width; j++) {
-                    //Debug.Log(i + " "+j);
-                    outColorMap[0].SetValue(i, j,  ColorMapLine [i * image.height + j]);
-				}
-			}
-            Debug.Log(outColorMap[0].GetValue(2, 3).g);
-            return outColorMap;
-		}
-
-        public override Parameter GetOutputParameterType()
-        {
-            return OutputType;
+        
+            Color[] ColorMapLine = image.GetPixels();
+            Color[,] value = new Color[image.width, image.height];
+            for (int i = 0; i < image.height; i++)
+            {
+                for (int j = 0; j < image.width; j++)
+                {
+                    //Debug.Log(ColorMapLine[i * image.height + j]);
+                    value[i, j]= ColorMapLine[i * image.height + j];
+                }
+            }
+            this.SetValue(value);
         }
 
-        public BitmapSourceNode (string filePath) : base ("Bitmap Source Node", 1)
-		{
-			this.FilePath = filePath;
-		
-		}
-	
 
-	}
+    }
 }

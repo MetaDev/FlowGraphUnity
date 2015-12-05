@@ -1,15 +1,12 @@
 ﻿using System;
-using Graph;
 using System.Collections.Generic;
-using UnityEngine.EventSystems;
+
 using UniRx;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Collections;
+
 using UnityEngine;
 using Graph.Parameters;
-using System.Net.Sockets;
-using UnityEditor;
+
 
 namespace Graph
 {
@@ -42,50 +39,41 @@ namespace Graph
 		{
 			//check if all are matching
 			int matchings = 0;
-			int longestSourceSequence = 1;
 			foreach (ISourceNode<Parameter> source in sources) {
-				String sourceParamName = source.GetOutputParameterType().Name;
+				String sourceParamName = source.PortParameter().Name;
 				if (InputParameters.ContainsKey (sourceParamName)) {
-					if (source.GetOutputParameterType ().Match (InputParameters [sourceParamName])) {
-						longestSourceSequence = Math.Max (source.GetSize (), longestSourceSequence);
+					if (source.PortParameter ().Match (InputParameters [sourceParamName])) {
 						matchings++;
 					} else {
-						Debug.Log ("parameter type mismatch." + source.GetOutputParameterType ().GetType ());
+						Debug.Log ("parameter type mismatch." + source.PortParameter ().GetType ());
 					}
 				} else {
-					Debug.Log ("parameter name mismatch." + source.GetOutputParameterType ().Name);
+					Debug.Log ("parameter name mismatch." + source.PortParameter ().Name);
 				}
 			
 			}
-			//zip if all sources match
-			//default values allowed
-			//if (matchings == sources.Count ()) {
-			var zip = sources.Select ((source) => (source.AsObservable (longestSourceSequence))).ToArray ();
-			var parameters = Observable.Zip<Parameter> (zip);
+            //zip if all sources match
 
-			InputSourcesConnection = parameters.Select ((list) => {
+			IEnumerable<IObservable<Parameter>> zip = sources.Select ((source) => (source.AsObservable ()));
+            IObservable<IList<Parameter>> parameters = Observable.Zip<Parameter> (zip);
+            //The target node will be drawing so it has to be on miain thread
+            InputSourcesConnection = parameters.ObserveOnMainThread().Select((list) => {
 				//update parameters
 				foreach (Parameter param in list) {
-					InputParameters [param.Name].Copy (param);
+					InputParameters [param.Name]= (param);
 				}
-				ConsumeParameters (InputParameters.Values.ToList ());
-				return Unit.Default;
+				ConsumeParameters (InputParameters);
+                return Unit.Default;
 			}).Subscribe ();
-			//start hot observable on first received parameter
-//			parameters.Take (2).Subscribe ((list) => {
-//				ConsumeParameters (list);
-//				obs.Connect ();
-//				Debug.Log ("test");
-//			});
 
-		}
+        }
 
 		public Dictionary<String,Parameter> GetInputParameters ()
 		{
 			return InputParameters;
 		}
 
-		protected abstract void ConsumeParameters (IList<Parameter> parameters);
+		protected abstract void ConsumeParameters (Dictionary<String, Parameter> inputParameters);
 	
 
 		//get each source of a parameter as an observable and subscribe

@@ -1,18 +1,25 @@
 ﻿TODO
 
+need immutable parameter and a port parameter
 
-only create different stream in source node if the requested size is different -> remove size but use interpolation or error on imcompatible size
 
-move project to project folder in drive
+for more efficietn drawing source.Buffer(TimeSpan.FromMilliseconds(100), 50). This means the longest we will block the UI is about 100ms to process a batch of 50 values, and we will never have values waiting for longer than 100ms before they are processed.
+
+put all file loading in unit itself, static variables are defined before running unity
+
+for example for the bitmap ask for texture in unity itself
+
+generic source nodes for random distributions dont need name
+
+they can be transformed and encapsulated which can be given a name
+
 
 throw warning when trying to change linke between nodes
 
-ask rian about crash
+ask rian about crash (io conflict with debug.log?)
 
-on linkto of target node check at run time the order of the parameters
 
-create a seperate class called ParameterType that is a parameter without values
-and rename to other to ParameterWrapper
+create a seperate constructor (or static method) for a parameter without value that only serves as port
 
 ->try to work with immutable objects, especially the parameters
 
@@ -20,18 +27,6 @@ add a method dimension to the parameters, as the dimensions of parameters should
 Parameter can be a multidimensional vector
 
 try to throw the possible class cast exception in a parameter verbally
-
-test propagator and refactor code for reuse of source and target code as much as possible
-
-implement default parameter with functional consume Parameters, if an input parameter has only 1 value
-set the parameter to cached and no longer call AsObservable on it in the link to
-
-add a repeat mode (alternating, copy,interpolate...) to a source of length >1
-
-
-for target node make set as inputParameters instead of dictionary
-
-create differen classes for parameters as ports and parameters as values
 
 
 
@@ -51,7 +46,6 @@ create differen classes for parameters as ports and parameters as values
 		and sourceNode as well
 
 
-		step by step introduce generics that bubble from ISubject to Iparameter to ISourceNode 
 
 		generics would be possible if working with Tuples instead of dictionaries
 		This would result in a fixed amount of parameters at compile time, which isn't neccesarly a problem

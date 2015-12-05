@@ -4,31 +4,14 @@ using MathNet.Numerics;
 
 namespace Graph.Parameters
 {
-	public class IntegerVector2Parameter : Parameter, IVector2Parameter<int>
+    public class IntegerVector2Parameter : Parameter, IParameter<Tuple<int, int>>
 	{
-		public IntegerVector2Parameter (string name) : base (name)
+       
+    public IntegerVector2Parameter (string name) : base (name)
 		{
 		}
 
-		public int GetValue1 ()
-		{
-			return this.GetValue ().Item1;
-		}
-
-		public int GetValue2 ()
-		{
-			return this.GetValue ().Item2;
-		}
-
-		public void SetValue1 (int value)
-		{
-			this.GetValue ().Item1 = value;
-		}
-
-		public void SetValue2 (int value)
-		{
-			this.GetValue ().Item2 = value;
-		}
+		
 
 		public Tuple<int, int> GetValue ()
 		{

@@ -9,25 +9,24 @@ namespace Generator
 	public class BlockGenerator : TargetNode
 	{
 		
-		static IntegerVector2Parameter position = new IntegerVector2Parameter ("Position");
-		static ColorParameter color = new ColorParameter ("Color");
-
-		public BlockGenerator () : base ("Block", position, color)
+		
+		public BlockGenerator () : base ("Block", new IntegerVector2Parameter("Position"), new ColorParameter("Color"))
 		{
-			//set input parameters
-			color.SetValue (new Color (0.1f, 0.20f, 0.3f));
+		
 		}
 
-		protected override void ConsumeParameters (IList<Parameter> parameters)
+		protected override void ConsumeParameters (Dictionary<String,Parameter> parameters)
 		{
             //
-            IntegerVector2Parameter position = parameters[0].As< IntegerVector2Parameter>();
-            ColorParameter color = parameters[1].As<ColorParameter>();
+            IntegerVector2Parameter position = parameters["Position"].As< IntegerVector2Parameter>();
+            ColorParameter color = parameters["Color"].As<ColorParameter>();
             //set position
             GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
-			cube.transform.position = new Vector3 (position.GetValue1 (), 0, position.GetValue2 ());
-			//set color
+			cube.transform.position = new Vector3 (position.GetValue ().Item1, 0, position.GetValue().Item2);
+            //set color
+            //Debug.Log(color.GetValue());
 			cube.GetComponent<Renderer> ().material.color = color.GetValue ();
+            
 		}
 		
 	}
