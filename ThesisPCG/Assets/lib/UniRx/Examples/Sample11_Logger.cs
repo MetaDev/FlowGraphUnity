@@ -9,7 +9,7 @@ namespace UniRx.Examples
     {
         // UniRx.Diagnostics.Logger
         // logger is threadsafe, define per class with name.
-        static readonly Logger logger = new Logger("Sample11");
+        static readonly Diagnostics.Logger logger = new Diagnostics.Logger("Sample11");
 
         // call once at applicationinit
         public void ApplicationInitialize()

@@ -217,12 +217,19 @@
      <Compile Include="Assets\src\Play\SpawnObstacles.cs" />
      <Compile Include="Assets\src\Test\DataflowVariable.cs" />
      <None Include="Assets\src\BrainStorm.txt" />
+     <None Include="Assets\src\BrainStorm[Conflict].txt" />
      <None Include="Assets\lib\UniRx\ReadMe.txt" />
+ <Reference Include="UnityEngine.Advertisements">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="AForge">
  <HintPath>C:/Users/Harald/Thesis/Thesis Harald De Bondt/Project/ThesisPCG/Assets/lib/AForge.dll</HintPath>

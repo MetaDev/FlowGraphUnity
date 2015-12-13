@@ -1,0 +1,83 @@
+﻿TODO
+
+
+replace all doubles by floats
+
+add offset node for grid node
+add scale node for grid node
+add grid mapper node that is able to map a grid(width,height,stepH,stepW)->grid(width',height',stepH',stepW') (with given interpolation)
+make method that zips sources in single source
+
+node to convert points to hermite surface
+node to sample hermite sruface using grid
+
+there is no contract for the shape of streams, this is purely optional (informational) and has to be checked by the user
+
+add a method that casts a parameter to its saved type
+add implicit downcast as operator FOR parameters
+
+a factory moethod to create simple function nodes (sin(x), x+y,...)
+a foctory method for combining streams in new data type (float + float-> Vector2)
+a factory for any propagator node, use string to, define input type and name, define propagation
+
+define basic operations on Color, like invert
+
+noise sources should be switchable with constant or function values
+
+e.g. normal, perlin, Gauchy,...
+
+set name property in INode
+
+add paremeter with interval
+
+migrate play project out of thesis
+
+create unity UI to edit source nodes (interfaces and visualisation with texture)
+
+create a texture generator node
+
+add FFT smoother of terrain
+
+
+throw warning when trying to change linke between nodes
+
+throw warning when shape and or size of linked nodes doesn't match
+
+for optimizing: try to balance between buffering at a node and lazy evaluation
+->buffering requires more memory but ensures that no node is ever starving for data
+->check discussion push-pull based system
+
+
+nodes can be made type safe by concatenating zips ans using tuples as type
+e.g.
+  var test =Observable.Empty<string>();
+            var tp = Observable.Empty<int>();
+             var ti = Observable.Empty<int>();
+            Observable.Zip( Observable.Zip(test, tp, (c,t)=> { return 1; }),ti,(tk,ptoy)=> {
+                
+                return "hallo"; });
+
+also consider the anononymous type of C sharp, uses tuples under the hood
+e.g  new { City="Prague", Name="Tomas" }
+
+
+a possibility to optimize the memory usage, the infiniteSource nodes could be used, these nodes would be linked to a target node
+by subscribing on the "zip" of the finite sources, and only emit the next value when all those are available .
+Because the source of an infinite node is always available
+the infinite source node is thus a propagator node, that merges all linked to target nodes 
+
+for now an infinite source is emulated with a finite source of which the size is defined at compile time
+which has as consequence that all the memory has to be allocated  before starting the graph
+
+implement possibility to repeat, interpolate,... sources to increase its size
+
+//play
+Increase slope ofsine steeper when pressed in the beginning of rise or descent. Later press closer to peak increases period
+
+in play make the tail a fixed amount of objects with hinge joints
+change the color of each tail object according to the force of impact on the obstacle 
+
+play test with other direction changing, the player should be able to quickly increase the slope of the sinus, 
+at the price that the mirrored slope is the same, the player can only change the slope on the same side of the curve per period
+
+the obstacles shouldn't appear randomly but based on a certain rythm, this rythm could be altered
