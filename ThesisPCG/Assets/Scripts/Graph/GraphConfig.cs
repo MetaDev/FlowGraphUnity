@@ -6,6 +6,7 @@ using Data.Noise;
 using UniRx.Diagnostics;
 using AForge.Math;
 using Graph.Propagator;
+using System.Collections.Generic;
 
 namespace Graph
 {
@@ -17,49 +18,78 @@ namespace Graph
         public Grass grass;
         public void Draw()
         {
-            var sampleTerrain = new GridNode("Position",100);
 
-            var sampleObjects = new GridNode("Position", 20);
-            var height100 = new CoherentNoiseNode("Height", frequency: 0.1, amplitude: 4, persistence: 0.3, octaves: 4);
-            var height20 = new CoherentNoiseNode("Height", frequency: 0.1, amplitude: 4, persistence: 0.3, octaves: 4);
-            var random = new DistributedNoiseNode("Size", sampleObjects.GetSize(), DistributedNoiseNode.DistributionType.UNIFORM, 1, 3);
-            var random1 = new DistributedNoiseNode("Type", sampleObjects.GetSize(), DistributedNoiseNode.DistributionType.UNIFORM,0,7);
+            //Graph configuration
+
+            //Sources
+
+            //samples with resolution
+            var resolutionSamples = new GridNode("Position", 100);
+
+            //vegetation random sources
+            var randomForObjectSize = new DistributedNoiseNode("Size", resolutionSamples.GetSize(), DistributedNoiseNode.DistributionType.UNIFORM, 1, 4);
+            var randomForObjectSampleFilter = new DistributedNoiseNode("Bound", resolutionSamples.GetSize(), DistributedNoiseNode.DistributionType.UNIFORM, 0, 15);
+            var randomForObjectType = new DistributedNoiseNode("Type", resolutionSamples.GetSize(), DistributedNoiseNode.DistributionType.UNIFORM, 0, 10);
+
+            //Propagators
+
+            //filters
+            var filterObjectPostions = new Filter("Position", 1f);
+            filterObjectPostions.SetSources(resolutionSamples, randomForObjectSampleFilter);
+
+            //Scales for position of terrain and objects based on resolution
+            var scaleTerrainPosition = new Scale(new UnityEngine.Vector3(100, 100, 100));
+            scaleTerrainPosition.SetSources(resolutionSamples);
+
+            var scaleObjectPosition = new Scale(new UnityEngine.Vector3(100, 100, 100));
+            scaleObjectPosition.SetSources(filterObjectPostions);
+
+            //perline noise for height of terrain an objects
+            var heightTerrain = new CoherentNoiseNode("Height", frequency: 0.1, amplitude: 4, persistence: 0.3, octaves: 4);
+            heightTerrain.SetSources(scaleTerrainPosition);
+
+            var heightObjects = new CoherentNoiseNode("Height", frequency: 0.1, amplitude: 4, persistence: 0.3, octaves: 4);
+            heightObjects.SetSources(scaleObjectPosition);
+
+            //read color from bitmap using sample
             var colormap = new SampleMapColorNode(ResourceLoader.LoadColorMatrix(tex, "ColorMap"));
+            colormap.SetSources(resolutionSamples);
+            var colormapObjects = new SampleMapColorNode(ResourceLoader.LoadColorMatrix(tex, "ColorMap"));
+            colormapObjects.SetSources(filterObjectPostions);
+
+            //Generators
+
+            //geometry
             var block = new BlockGenerator();
-            var scale100 = new Scale(new UnityEngine.Vector3(100, 100, 100));
-            var scale20 = new Scale(new UnityEngine.Vector3(100, 100, 100));
+            block.SetSources(scaleTerrainPosition, heightTerrain, colormap);
             var vegetation = new VegetationGenerator(tree, bush, grass);
-            var debug = new DebugGenerator();
-            scale100.LinkTo(sampleTerrain);
-            scale20.LinkTo(sampleObjects);
+            vegetation.SetSources(scaleObjectPosition, heightObjects, randomForObjectSize, colormapObjects, randomForObjectType);
 
-            var surface = new SurfaceMeshGenerator(resolution:100);
-            height100.LinkTo(scale100);
-            height20.LinkTo(scale20);
-            colormap.LinkTo(sampleTerrain);
-            block.LinkTo(scale100, height100, colormap);
-            //new Vector3fParameter("Position"), new DoubleParameter("Height"), new DoubleParameter("Size"), new ColorParameter("Color"), new DoubleParameter("Type"))
-            vegetation.LinkTo(scale20, height20, random,colormap, random1);
-            surface.LinkTo(scale100, colormap, height100);
+            //to console
+            //var debug = new DebugGenerator();
+            //debug.SetSources(colormapObjects);
 
+            //Graph evaluation
+
+            //start sources
             Observable.Start(() =>
             {
-                sampleObjects.StartOutput();
+                resolutionSamples.StartOutput();
             });
             Observable.Start(() =>
             {
-                sampleTerrain.StartOutput();
+                randomForObjectSize.StartOutput();
             });
             Observable.Start(() =>
             {
-                random.StartOutput();
+                randomForObjectType.StartOutput();
             });
             Observable.Start(() =>
             {
-                random1.StartOutput();
+                randomForObjectSampleFilter.StartOutput();
             });
 
-            //StartWithSources(sample, random, noise);
+
 
 
 

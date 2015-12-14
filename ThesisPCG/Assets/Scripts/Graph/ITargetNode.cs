@@ -10,7 +10,7 @@ namespace Graph
 {
 	public interface ITargetNode : INode
 	{
-		void LinkTo (params ISourceNode<Parameter>[] sources);
+		void SetSources (params ISourceNode<Parameter>[] sources);
         void Sink(IObservable<IList<Parameter>> observable);
         Dictionary<String, Parameter> GetInputParameters();
     }

@@ -27,9 +27,9 @@ namespace Graph
         private int _Size = int.MaxValue;
 
 
-        public void LinkTo(params ISourceNode<Parameter>[] sources)
+        public void SetSources(params ISourceNode<Parameter>[] sources)
         {
-            TargetNode.LinkTo(this,false,sources);
+            TargetNode.SetSources(this,false,sources);
 
             foreach (ISourceNode<Parameter> source in sources)
             {

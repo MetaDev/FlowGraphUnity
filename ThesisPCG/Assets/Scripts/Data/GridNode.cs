@@ -30,9 +30,9 @@ namespace Data
             var s = new List<Parameter>();
            
             
-            for (float x = 0; x < Resolution; x++)
+            for (float y = 0;y < Resolution;y++)
             {
-                for (float y = 0; y < Resolution; y++)
+                for (float x = 0; x < Resolution; x++)
                 {
                     Vector3fParameter param = new Vector3fParameter(this.OutputParameter().Name,new Vector3( x/Resolution,0,y / Resolution));
                     s.Add(param);

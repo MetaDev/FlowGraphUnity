@@ -38,7 +38,7 @@ namespace Graph
                 InputDict.Add(param.Name, param);
             }
         }
-        public static Parameter GetParameterFromList(String name, IList<Parameter> parameters)
+        public static Parameter GetParameterFromList(string name, IList<Parameter> parameters)
         {
             foreach (Parameter parameter in parameters)
             {
@@ -47,7 +47,7 @@ namespace Graph
                     return parameter;
                 }
             }
-            Debug.Log("parameter not found");
+            Debug.Log("parameter not found: " + name);
             //TODO add to log, parameter not found
             return null;
         }
@@ -55,13 +55,13 @@ namespace Graph
 
 
         
-        public void LinkTo(params ISourceNode<Parameter>[] sources)
+        public void SetSources(params ISourceNode<Parameter>[] sources)
         {
-            LinkTo(this,this.UnityMainThread, sources);
+            SetSources(this,this.UnityMainThread, sources);
         }
        
         //check if parameters compatible
-        public static void LinkTo(ITargetNode target,bool unityMainThread, params ISourceNode<Parameter>[] sources)
+        public static void SetSources(ITargetNode target,bool unityMainThread, params ISourceNode<Parameter>[] sources)
         {
             //check if all are matching
             int matchings = 0;

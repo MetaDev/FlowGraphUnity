@@ -1,7 +1,20 @@
 ﻿TODO
 
+generate mesh based on height map
+the height map can orinate from multiple sources
 
 replace all doubles by floats
+
+set seperate resolution for x and y in sampling and mesh generation
+
+try to catch verbally exceptions due to bad connection of the graph
+
+to reduce name mistake, allow to take name from source as port name
+
+try warning wen re-setting the sources
+
+
+check libnoise for interesting operations and sources for terrains
 
 add offset node for grid node
 add scale node for grid node
@@ -23,6 +36,10 @@ a factory for any propagator node, use string to, define input type and name, de
 define basic operations on Color, like invert
 
 noise sources should be switchable with constant or function values
+
+allow regex to select parameters from list
+order parameters in list of target in the same order as input parameters are specified in constructor
+
 
 e.g. normal, perlin, Gauchy,...
 
@@ -81,3 +98,5 @@ play test with other direction changing, the player should be able to quickly in
 at the price that the mirrored slope is the same, the player can only change the slope on the same side of the curve per period
 
 the obstacles shouldn't appear randomly but based on a certain rythm, this rythm could be altered
+
+to do real crazy stuff a node could be able to create other nodes (why, I don't know)

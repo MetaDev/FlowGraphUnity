@@ -10,7 +10,7 @@ namespace Generator
         private Renderer rend;
         public virtual void SetScale(Vector3 scale)
         {
-            Block.SetScale(GetMesh(), scale);
+            this.transform.localScale = scale;
         }
         public virtual void SetColor(Color color)
         {

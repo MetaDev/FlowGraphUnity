@@ -108,9 +108,10 @@
     <Compile Include="Assets\Scripts\Graph\InfiniteSouceNode.cs" />
     <Compile Include="Assets\Scripts\Graph\Link.cs" />
     <Compile Include="Assets\Scripts\Graph\Node.cs" />
-    <Compile Include="Assets\Scripts\Graph\PropagatorNode.cs" />
+    <Compile Include="Assets\Scripts\Graph\Propagator\Filter.cs" />
+    <Compile Include="Assets\Scripts\Graph\Propagator\SampleMapColorNode.cs" />
     <Compile Include="Assets\Scripts\Graph\Propagator\Scale.cs" />
-    <Compile Include="Assets\Scripts\Graph\SampleMapColorNode.cs" />
+    <Compile Include="Assets\Scripts\Graph\PropagatorNode.cs" />
     <Compile Include="Assets\Scripts\Graph\SourceNode.cs" />
     <Compile Include="Assets\Scripts\Graph\TargetNode.cs" />
     <Compile Include="Assets\Scripts\Noise\CoherentNoise.cs" />
